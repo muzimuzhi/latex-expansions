@@ -1,0 +1,43 @@
+\DeclareRobustCommand\citet
+   {\begingroup\NAT@swafalse\let\NAT@ctype\z@\NAT@partrue
+     \@ifstar{\NAT@fulltrue\NAT@citetp}{\NAT@fullfalse\NAT@citetp}}
+
+\DeclareRobustCommand\citep
+  {\begingroup\NAT@swatrue\let\NAT@ctype\z@\NAT@partrue
+    \@ifstar{\NAT@fulltrue\NAT@citetp}{\NAT@fullfalse\NAT@citetp}}
+
+\newcommand\NAT@citetp{\@ifnextchar[{\NAT@@citetp}{\NAT@@citetp[]}}
+
+\def\NAT@@citetp[#1]{\@ifnextchar[{\@citex[#1]}{\@citex[][#1]}}
+
+% \NAT@numbersfalse, by default
+\let\@citex\NAT@citex
+
+
+
+\newcommand\NAT@cite[3]{
+  \ifNAT@swa
+    \NAT@@open
+    \if*#2*\else#2\NAT@spacechar\fi
+    #1
+    \if*#3*\else\NAT@cmt#3\fi
+    \NAT@@close
+  \else
+    #1
+  \fi
+  \endgroup}
+
+
+
+% \bibcite
+%   {betts2005aging}
+%   {{10}{2005}{{Betts {和} Taylor}}{{Betts and Taylor}}}
+
+\renewcommand\bibcite[2]{%
+ \@ifundefined{b@#1\@extra@binfo}{\relax}{%
+   \NAT@citemultiple
+   \PackageWarningNoLine{natbib}{Citation `#1' multiply defined}%
+ }%
+ \global\@namedef{b@#1\@extra@binfo}{#2}%
+}%
+

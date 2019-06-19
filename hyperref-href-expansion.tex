@@ -1,0 +1,242 @@
+\href{URL}{link text}
+
+\DeclareRobustCommand*{\href}[1][]{%
+  \begingroup
+  \setkeys{href}{#1}%
+  \@ifnextchar\bgroup\Hy@href{\hyper@normalise\href@}%
+}
+
+\begingroup
+\Hy@href{github.com}{GitHub}
+
+\def\Hy@href#{%
+  \hyper@normalise\href@
+}
+
+\begingroup\begingroup
+\hyper@normalise\href@{github.com}{GitHub}
+
+\begingroup
+\href@{github.com}{GitHub}
+
+\begingroup
+  \catcode`\$=6 % parameter character
+  \catcode`\#=12 % other
+  \gdef\href@$1{\expandafter\href@split$1##\\}%
+  \gdef\href@split$1#$2#$3\\$4{%
+    \hyper@@link{$1}{$2}{$4}%
+    \endgroup
+  }%
+\endgroup
+$%
+
+\begingroup
+\expandafter \href@split github.com##\\{GitHub}
+
+\begingroup
+\hyper@@link{github.com}{}{GitHub}
+\endgroup
+
+\def\hyper@@link{\let\Hy@reserved@a\relax
+  \@ifnextchar[{\hyper@link@}{\hyper@link@[link]}%
+}
+
+\begingroup
+\hyper@link@[link]{github.com}{}{GitHub}
+\endgroup
+
+\def\hyper@link@[#1]#2#3#4{%
+  \ltx@ifempty{#4}{% link text
+    \Hy@Warning{Suppressing empty link}%
+  }{%
+    \begingroup
+      \protected@edef\Hy@tempa{#2}%
+      \edef\Hy@tempb{#3}%
+      \ifx\Hy@tempa\ltx@empty
+        \ifx\Hy@tempb\ltx@empty
+          \Hy@Warning{Suppressing link with empty target}%
+          \toks@{%
+            \endgroup
+            \ltx@secondoftwo
+          }%
+        \else
+          \toks@{%
+            \endgroup
+            \hyper@link{#1}%
+          }%
+        \fi
+      \else
+        \toks@{%
+          \endgroup
+          \expandafter\hyper@readexternallink#2\\{#1}%
+        }%
+      \fi
+      \Hy@safe@activesfalse
+      \toks@\expandafter{%
+        \the\expandafter\toks@
+        \expandafter{\Hy@tempb}{#4}%
+      }%
+    \the\toks@
+  }%
+}
+
+\begingroup
+\begingroup
+\Hy@safe@activesfalse
+\endgroup
+\hyper@readexternallink github.com\\{link}{}{GitHub}
+\endgroup
+
+
+\def\hyper@readexternallink#1\\#2#3#4{%
+  \begingroup
+    \let\\\relax
+  \expandafter\endgroup
+  \expandafter\@@hyper@@readexternallink#1\\{#2}{#3}{#4}%
+}
+
+\begingroup
+\@@hyper@@readexternallink github.com\\{link}{}{GitHub}
+\endgroup
+
+% URL or file name, type, internal name, link string
+\def\@@hyper@@readexternallink#1\\#2#3#4{%
+  \@hyper@readexternallink{#2}{#3}{#4}#1::\\{#1}%
+}
+
+\begingroup
+\@hyper@readexternallink {link}{}{GitHub}https://github.com::\\{https://github.com}
+\endgroup
+
+% link type, internal name, link string
+% URL type (http, mailto, file, ...), URL details, after ":"
+% whole URL
+\def\@hyper@readexternallink#1#2#3#4:#5:#6\\#7{%
+  \ifx\\#6\\% local file
+    \@hyper@linkfile file:#7\\{#3}{#2}{#7}%
+  \else
+    \ifx\\#4\\% mac filename
+      \@hyper@linkfile file:#7\\{#3}{#2}{#7}%
+    \else
+      \def\@pdftempa{#4}%
+      \ifx\@pdftempa\@pdftempwordfile
+        \@hyper@linkfile#7\\{#3}{#2}{#7}%
+      \else
+        \ifx\@pdftempa\@pdftempwordrun
+          \ifHy@pdfa
+            \Hy@Error{%
+              PDF/A: Launch action is prohibited%
+            }\@ehc
+            \begingroup
+              \leavevmode
+              #2%
+            \endgroup
+          \else
+            \@hyper@launch#7\\{#3}{#2}%
+          \fi
+        \else
+          \hyper@linkurl{#3}{#7\ifx\\#2\\\else\hyper@hash#2\fi}%
+        \fi
+      \fi
+    \fi
+  \fi
+}
+
+\begingroup
+\@hyper@readexternallink {link}{}{GitHub}https://github.com::\\{https://github.com}
+
+#1 {link}
+#2 {}
+#3 {GitHub}
+#4 https
+#5 //github.com
+#6 :
+#7 https://github.com
+
+\hyper@linkurl{GitHub}{https://github.com}
+
+\@hyper@readexternallink {link}{}{GitHub}github.tex::\\{github.tex}
+
+#1 {link}
+#2 {}
+#3 {GitHub}
+#4 github.tex
+#5 
+#6 
+#7 github.tex
+
+\@hyper@linkfile file:github.tex\\{GitHub}{}{github.tex}
+\endgroup
+
+\begingroup
+% driver dependent
+\hyper@linkurl{GitHub}{https://github.com}
+\endgroup
+
+% hpdftex.def
+\def\hyper@linkurl#1#2{%
+  \begingroup
+    \Hy@pstringdef\Hy@pstringURI{#2}%
+    \hyper@chars
+    \leavevmode
+    \pdfstartlink
+      attr{%
+        \Hy@setpdfborder
+        \Hy@setpdfhighlight
+        \ifx\@urlbordercolor\relax
+        \else
+          /C[\@urlbordercolor]%
+        \fi
+      }%
+      user{%
+       /Subtype/Link%
+       \ifHy@pdfa /F 4\fi
+       /A<<%
+         /Type/Action%
+         /S/URI%
+         /URI(\Hy@pstringURI)%
+         \ifHy@href@ismap
+           /IsMap true%
+         \fi
+         \Hy@href@nextactionraw
+       >>%
+      }%
+      \relax
+    \Hy@colorlink\@urlcolor#1\Hy@xspace@end
+    \close@pdflink
+  \endgroup
+}
+
+\Hy@AtBeginDocument{%
+  \def\Hy@colorlink#1{%
+    \begingroup
+      \ifHy@ocgcolorlinks
+        \def\Hy@ocgcolor{#1}%
+        \setbox0=\hbox\bgroup\color@begingroup
+      \else
+        \HyColor@UseColor#1%
+      \fi
+  }%
+  \def\Hy@endcolorlink{%
+    \ifHy@ocgcolorlinks
+      \color@endgroup\egroup
+      \mbox{%
+        \pdfliteral page{/OC/OCPrint BDC}%
+        \rlap{\copy0}%
+        \pdfliteral page{EMC/OC/OCView BDC}%
+        \begingroup
+          \expandafter\HyColor@UseColor\Hy@ocgcolor
+          \box0 %
+        \endgroup
+        \pdfliteral page{EMC}%
+      }%
+    \fi
+    \endgroup
+  }%
+}%
+
+\def\close@pdflink{%
+  \Hy@endcolorlink
+  \Hy@VerboseLinkStop
+  \pdfendlink
+}

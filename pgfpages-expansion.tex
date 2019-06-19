@@ -1,0 +1,189 @@
+\pgfpagesuselayout{2 on 1}
+
+\def\pgfpagesuselayout#1{\pgfutil@ifnextchar[{\pgf@pagelayout{#1}}{\pgf@pagelayout{#1}[]}}
+
+\pgf@pagelayout{2 on 1}[]
+
+
+\def\pgf@pagelayout#1[#2]{
+  \csname pgfpages@layoutbefore@#1\endcsname
+  \setkeys{pgfpagesuselayoutoption}{#2}
+  \pgfutil@ifundefined{pgfpages@layout@#1}{
+    \PackageError{pgfpages}{Page layout `#1' undefined.}{}
+  }
+  {
+    \csname pgfpages@layout@#1\endcsname
+  }
+}
+
+\csname pgfpages@layoutbefore@2 on 1\endcsname
+\setkeys{pgfpagesuselayoutoption}{}
+\csname pgfpages@layout@2 on 1\endcsname
+
+
+\pgfpagesdeclarelayout{2 on 1}
+{
+  \edef\pgfpageoptionheight{\the\paperwidth} % landscaped by default
+  \edef\pgfpageoptionwidth{\the\paperheight}
+  \def\pgfpageoptionborder{0pt}
+  \def\pgfpageoptionfirstshipout{1}
+}
+{
+  \pgfpagesphysicalpageoptions
+  {%
+    logical pages=2,%
+    physical height=\pgfpageoptionheight,%
+    physical width=\pgfpageoptionwidth,%
+    current logical shipout=\pgfpageoptionfirstshipout%
+  }
+  \ifdim\paperheight>\paperwidth\relax
+    % put side-by-side
+    \pgfpageslogicalpageoptions{1}
+    {%
+      border shrink=\pgfpageoptionborder,%
+      resized width=.5\pgfphysicalwidth,%
+      resized height=\pgfphysicalheight,%
+      center=\pgfpoint{.25\pgfphysicalwidth}{.5\pgfphysicalheight}%
+    }%
+    \pgfpageslogicalpageoptions{2}
+    {%
+      border shrink=\pgfpageoptionborder,%
+      resized width=.5\pgfphysicalwidth,%
+      resized height=\pgfphysicalheight,%
+      center=\pgfpoint{.75\pgfphysicalwidth}{.5\pgfphysicalheight}%
+    }%
+  \else
+    % stack on top of one another
+    \pgfpageslogicalpageoptions{1}
+    {%
+      border shrink=\pgfpageoptionborder,%
+      resized width=\pgfphysicalwidth,%
+      resized height=.5\pgfphysicalheight,%
+      center=\pgfpoint{.5\pgfphysicalwidth}{.75\pgfphysicalheight}%
+    }%
+    \pgfpageslogicalpageoptions{2}
+    {%
+      border shrink=\pgfpageoptionborder,%
+      resized width=\pgfphysicalwidth,%
+      resized height=.5\pgfphysicalheight,%
+      center=\pgfpoint{.5\pgfphysicalwidth}{.25\pgfphysicalheight}%
+    }%
+  \fi    
+}
+
+\newcommand\pgfpagesdeclarelayout[3]{
+  \expandafter\newcommand\csname pgfpages@layoutbefore@#1\endcsname{#2}
+  \expandafter\newcommand\csname pgfpages@layout@#1\endcsname{#3}}
+
+
+\edef\pgfpageoptionheight{\the\paperwidth} % landscaped by default
+\edef\pgfpageoptionwidth{\the\paperheight}
+\def\pgfpageoptionborder{0pt}
+\def\pgfpageoptionfirstshipout{1}
+%
+\setkeys{pgfpagesuselayoutoption}{}
+%
+\pgfpagesphysicalpageoptions
+{%
+  logical pages=2,%
+  physical height=\the\paperwidth,%
+  physical width=\the\paperheight,%
+  current logical shipout=1%
+}
+% put side-by-side
+\pgfpageslogicalpageoptions{1}
+{%
+  border shrink=\pgfpageoptionborder,%
+  resized width=.5\pgfphysicalwidth,%
+  resized height=\pgfphysicalheight,%
+  center=\pgfpoint{.25\pgfphysicalwidth}{.5\pgfphysicalheight}%
+}%
+\pgfpageslogicalpageoptions{2}
+{%
+  border shrink=\pgfpageoptionborder,%
+  resized width=.5\pgfphysicalwidth,%
+  resized height=\pgfphysicalheight,%
+  center=\pgfpoint{.75\pgfphysicalwidth}{.5\pgfphysicalheight}%
+}%
+
+\newcommand\pgfpagesphysicalpageoptions[1]{%
+  \pgf@lastshipout=0\relax%
+  \pgf@currentshipout=0\relax%
+  \setkeys{pgfpages@main}{#1}%
+  \ifnum\pgf@lastshipout=0\relax%not set
+    \pgf@lastshipout=\pgf@logicalpages%
+  \fi%  
+  \ifnum\pgf@currentshipout=0\relax%not set
+    \pgf@currentshipout=\pgf@firstshipout%
+  \fi%  
+}
+
+\pgfpagesphysicalpageoptions
+{%
+  logical pages=2,%
+  physical height=\the\paperwidth,%
+  physical width=\the\paperheight,%
+  current logical shipout=1%
+}
+->
+\pgf@lastshipout=0
+\pgf@logicalpages=2
+\pgfphysicalheight=\the\paperwidth
+\pgfphysicalwidth=\the\paperheight
+\pgf@currentshipout=1
+\pgf@currentshipout=\pgf@firstshipout%
+
+\newcommand\pgfpageslogicalpageoptions[2]{%
+  \pgf@cpn=#1\relax%
+  \expandafter\ifx\csname pgfpages@box@#1\endcsname\relax%
+    \expandafter\newbox\csname pgfpages@box@#1\endcsname%
+    \edef\pgf@temp{%
+      \noexpand\pgf@psetcurrent{height}{\the\paperheight}%
+      \noexpand\pgf@psetcurrent{width}{\the\paperwidth}%
+    }%
+    \pgf@temp%
+  \fi%
+  \setkeys{pgfpages@page}{#2}%
+  \pgf@calculateresizes{height}%
+  \pgf@calculateresizes{width}%
+  \pgfsetupphysicalpagesizes%
+}
+\def\pgf@psetcurrent#1#2{\pgf@pset{\the\pgf@cpn}{#1}{#2}}
+\def\pgf@pset#1#2#3{\expandafter\def\csname pgfpages@p@#1@#2\endcsname{#3}}
+\def\pgf@epsetcurrent#1#2{\pgf@pset{\the\pgf@cpn}{#1}{#2}}
+
+\pgfpageslogicalpageoptions{1}
+{%
+  border shrink=\pgfpageoptionborder,%
+  resized width=.5\pgfphysicalwidth,%
+  resized height=\pgfphysicalheight,%
+  center=\pgfpoint{.25\pgfphysicalwidth}{.5\pgfphysicalheight}%
+}%
+->
+\pgf@cpn=1
+\newbox\pgfpages@box@1
+\def\pgfpages@p@1@height{\the\paperheight}
+\def\pgfpages@p@1@width{\the\paperwidth}
+%
+\def\pgfpages@p@1@border{0pt}
+\def\pgfpages@p@1@rewidth{.5\paperwidth}
+\def\pgfpages@p@1@reheight{\paperheight}
+\def\pgfpages@p@1@center{\pgfpoint{.25\paperwidth}{.5\paperheight}}
+%
+% \pgf@calculateresizes{height}%
+% ->
+% \pgfutil@tempdima=reheight
+% \pgfutil@tempdimb=border
+% reheight -= 2 border
+% b = height
+% a /= (height in pt)
+% b = 10000pt
+% ->
+% \pgf@psetcurrent{scale}{h scale in pt}
+% ->
+\pgf@pset{1}{scale}{h scale in pt}
+\def\pgfpages@p@1@scale{h scale in pt}
+%
+\pgf@calculateresizes{width}%
+\pgfsetupphysicalpagesizes%
+
