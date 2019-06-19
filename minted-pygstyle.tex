@@ -1,0 +1,34 @@
+\PYG{k}{xxx}
+
+\def\PYG#1#2{\PYG@reset\PYG@toks#1+\relax+\PYG@do{#2}}
+
+\PYG@reset\PYG@toks k+\relax+\PYG@do{xxx}
+
+\def\PYG@reset{\let\PYG@it=\relax \let\PYG@bf=\relax%
+    \let\PYG@ul=\relax \let\PYG@tc=\relax%
+    \let\PYG@bc=\relax \let\PYG@ff=\relax}
+
+\let\PYG@it=\relax \let\PYG@bf=\relax%
+\let\PYG@ul=\relax \let\PYG@tc=\relax%
+\let\PYG@bc=\relax \let\PYG@ff=\relax
+\PYG@toks k+\relax+\PYG@do{xxx}
+
+\def\PYG@toks#1+{\ifx\relax#1\empty\else%
+    \PYG@tok{#1}\expandafter\PYG@toks\fi}
+
+\PYG@tok{k}\PYG@toks
+\relax+\PYG@do{xxx}
+
+\def\PYG@tok#1{\csname PYG@tok@#1\endcsname}
+
+\PYG@tok@k\PYG@toks
+\relax+\PYG@do{xxx}
+
+\expandafter\def\csname PYG@tok@k\endcsname{\let\PYG@bf=\textbf\def\PYG@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+
+\let\PYG@bf=\textbf
+\def\PYG@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}
+\PYG@do{xxx}
+
+\def\PYG@do#1{\PYG@bc{\PYG@tc{\PYG@ul{%
+    \PYG@it{\PYG@bf{\PYG@ff{#1}}}}}}}
