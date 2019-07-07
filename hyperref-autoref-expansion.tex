@@ -1,0 +1,309 @@
+\autoref{lem:1}
+
+\DeclareRobustCommand*{\autoref}{%
+  \leavevmode
+  \@ifstar{\HyRef@autoref\@gobbletwo}{\HyRef@autoref\hyper@@link}%
+}
+
+\HyRef@autoref\hyper@@link{lem:1}
+
+\def\HyRef@autoref#1#2{%
+  \begingroup
+    \Hy@safe@activestrue
+    \expandafter\HyRef@autosetref\csname r@#2\endcsname{#2}{#1}%
+  \endgroup
+}
+
+\begingroup
+  \Hy@safe@activestrue
+  \expandafter\HyRef@autosetref
+  \csname r@lem:1\endcsname{lem:1}{\hyper@@link}%
+\endgroup
+
+\begingroup
+  \@safe@activestrue % is \relax
+  \HyRef@autosetref  \r@lem:1 {lem:1}{\hyper@@link}%
+\endgroup
+
+\def\HyRef@autosetref#1#2#3{% link command, csname, refname
+  \HyRef@ShowKeysRef{#2}%
+  \ifcase 0\ifx#1\relax 1\fi\ifx#1\Hy@varioref@undefined 1\fi\relax
+    \edef\HyRef@thisref{%
+      \expandafter\@fourthoffive#1\@empty\@empty\@empty
+    }%
+    \expandafter\HyRef@testreftype\HyRef@thisref.\\%
+    \Hy@safe@activesfalse
+    #3{%
+      \expandafter\@fifthoffive#1\@empty\@empty\@empty
+    }{%
+      \expandafter\@fourthoffive#1\@empty\@empty\@empty
+    }{%
+      \HyRef@currentHtag
+      \expandafter\@firstoffive#1\@empty\@empty\@empty
+      \null
+    }%
+  \else
+    \protect\G@refundefinedtrue
+    \nfss@text{\reset@font\bfseries ??}%
+    \@latex@warning{%
+      Reference `#2' on page \thepage\space undefined%
+    }%
+  \fi
+}
+
+\begingroup
+  \HyRef@ShowKeysRef{lem:1}%
+  \ifcase 0\ifx\r@lem:1\relax 1\fi\ifx\r@lem:1\Hy@varioref@undefined 1\fi\relax
+    \edef\HyRef@thisref{%
+      \expandafter\@fourthoffive\r@lem:1\@empty\@empty\@empty
+    }%
+    \expandafter\HyRef@testreftype\HyRef@thisref.\\%
+    \Hy@safe@activesfalse
+    \hyper@@link{%
+      \expandafter\@fifthoffive\r@lem:1\@empty\@empty\@empty
+    }{%
+      \expandafter\@fourthoffive\r@lem:1\@empty\@empty\@empty
+    }{%
+      \HyRef@currentHtag
+      \expandafter\@firstoffive\r@lem:1\@empty\@empty\@empty
+      \null
+    }%
+  \else
+    \protect\G@refundefinedtrue
+    \nfss@text{\reset@font\bfseries ??}%
+    \@latex@warning{%
+      Reference `lem:1' on page \thepage\space undefined%
+    }%
+  \fi
+\endgroup
+
+\let\HyRef@ShowKeysRef\@gobble
+\def\Hy@varioref@undefined{{??}{??}{}{}{}}
+\r@lem:1 = macro:->{1}{1}{}{lemma.1}{}
+
+\begingroup
+  \ifcase 0
+    \ifx\r@lem:1\relax 1\fi % false
+    \ifx\r@lem:1\Hy@varioref@undefined 1\fi\relax % false
+    \edef\HyRef@thisref{lemma.1}
+    \expandafter\HyRef@testreftype\HyRef@thisref.\\%
+    \Hy@safe@activesfalse
+    \hyper@@link{%
+      \expandafter\@fifthoffive\r@lem:1\@empty\@empty\@empty
+    }{%
+      \expandafter\@fourthoffive\r@lem:1\@empty\@empty\@empty
+    }{%
+      \HyRef@currentHtag
+      \expandafter\@firstoffive\r@lem:1\@empty\@empty\@empty
+      \null
+    }%
+  \else
+    \protect\G@refundefinedtrue
+    \nfss@text{\reset@font\bfseries ??}%
+    \@latex@warning{%
+      Reference `lem:1' on page \thepage\space undefined%
+    }%
+  \fi
+\endgroup
+
+\begingroup
+  \HyRef@testreftype lemma.1.\\%
+  \Hy@safe@activesfalse
+  \hyper@@link{%
+    \expandafter\@fifthoffive\r@lem:1\@empty\@empty\@empty
+  }{%
+    \expandafter\@fourthoffive\r@lem:1\@empty\@empty\@empty
+  }{%
+    \HyRef@currentHtag
+    \expandafter\@firstoffive\r@lem:1\@empty\@empty\@empty
+    \null
+  }%
+\endgroup
+
+\def\HyRef@testreftype#1.#2\\{%
+  \ltx@IfUndefined{#1autorefname}{%
+    \ltx@IfUndefined{#1name}{%
+      \HyRef@StripStar#1\\*\\\@nil{#1}%
+      \ltx@IfUndefined{\HyRef@name autorefname}{%
+        \ltx@IfUndefined{\HyRef@name name}{%
+          \def\HyRef@currentHtag{}%
+          \Hy@Warning{No autoref name for `#1'}%
+        }{%
+          \edef\HyRef@currentHtag{%
+            \expandafter\noexpand\csname\HyRef@name name\endcsname
+            \noexpand~%
+          }%
+        }%
+      }{%
+        \edef\HyRef@currentHtag{%
+          \expandafter\noexpand
+          \csname\HyRef@name autorefname\endcsname
+          \noexpand~%
+        }%
+      }%
+    }{%
+      \edef\HyRef@currentHtag{%
+        \expandafter\noexpand\csname#1name\endcsname
+        \noexpand~%
+      }%
+    }%
+  }{%
+    \edef\HyRef@currentHtag{%
+      \expandafter\noexpand\csname#1autorefname\endcsname
+      \noexpand~%
+    }%
+  }%
+}
+
+\begingroup
+  \ltx@IfUndefined{lemmaautorefname}{% #1 = "lemma", #2 = "1."
+    \ltx@IfUndefined{#1name}{% not undefined, \ltx@secondoftwo
+      \HyRef@StripStar#1\\*\\\@nil{#1}%
+      \ltx@IfUndefined{\HyRef@name autorefname}{%
+        \ltx@IfUndefined{\HyRef@name name}{%
+          \def\HyRef@currentHtag{}%
+          \Hy@Warning{No autoref name for `#1'}%
+        }{%
+          \edef\HyRef@currentHtag{%
+            \expandafter\noexpand\csname\HyRef@name name\endcsname
+            \noexpand~%
+          }%
+        }%
+      }{%
+        \edef\HyRef@currentHtag{%
+          \expandafter\noexpand
+          \csname\HyRef@name autorefname\endcsname
+          \noexpand~%
+        }%
+      }%
+    }{%
+      \edef\HyRef@currentHtag{%
+        \expandafter\noexpand\csname#1name\endcsname
+        \noexpand~%
+      }%
+    }%
+  }{%
+    \edef\HyRef@currentHtag{%
+      \expandafter\noexpand\csname lemmaautorefname\endcsname
+      \noexpand~%
+    }%
+  }%
+  \Hy@safe@activesfalse
+  \hyper@@link{%
+    \expandafter\@fifthoffive\r@lem:1\@empty\@empty\@empty
+  }{%
+    \expandafter\@fourthoffive\r@lem:1\@empty\@empty\@empty
+  }{%
+    \HyRef@currentHtag
+    \expandafter\@firstoffive\r@lem:1\@empty\@empty\@empty
+    \null
+  }%
+\endgroup
+
+\begingroup
+  \edef\HyRef@currentHtag{\lemmaautorefname~}%
+  \Hy@safe@activesfalse % \relax
+  \hyper@@link{%
+    \expandafter\@fifthoffive\r@lem:1\@empty\@empty\@empty
+  }{%
+    \expandafter\@fourthoffive\r@lem:1\@empty\@empty\@empty
+  }{%
+    \HyRef@currentHtag
+    \expandafter\@firstoffive\r@lem:1\@empty\@empty\@empty
+    \null
+  }%
+\endgroup
+
+\def\hyper@@link{\let\Hy@reserved@a\relax
+  \@ifnextchar[{\hyper@link@}{\hyper@link@[link]}%
+}
+
+\begingroup
+  \edef\HyRef@currentHtag{\lemmaautorefname~}%
+  \hyper@link@[link]
+    {\expandafter\@fifthoffive\r@lem:1\@empty\@empty\@empty}
+    {\expandafter\@fourthoffive\r@lem:1\@empty\@empty\@empty}
+    {%
+      \HyRef@currentHtag
+      \expandafter\@firstoffive\r@lem:1\@empty\@empty\@empty
+      \null
+    }%
+\endgroup
+
+\def\hyper@link@[#1]#2#3#4{%
+  \ltx@ifempty{#4}{% link text
+    \Hy@Warning{Suppressing empty link}%
+  }{%
+    \begingroup
+      \protected@edef\Hy@tempa{#2}%
+      \edef\Hy@tempb{#3}%
+      \ifx\Hy@tempa\ltx@empty
+        \ifx\Hy@tempb\ltx@empty
+          \Hy@Warning{Suppressing link with empty target}%
+          \toks@{%
+            \endgroup
+            \ltx@secondoftwo
+          }%
+        \else
+          \toks@{%
+            \endgroup
+            \hyper@link{#1}%
+          }%
+        \fi
+      \else
+        \toks@{%
+          \endgroup
+          \expandafter\hyper@readexternallink#2\\{#1}%
+        }%
+      \fi
+      \Hy@safe@activesfalse
+      \toks@\expandafter{%
+        \the\expandafter\toks@
+        \expandafter{\Hy@tempb}{#4}%
+      }%
+    \the\toks@
+  }%
+}
+
+\r@lem:1 = macro:->{1}{1}{}{lemma.1}{}
+
+\begingroup
+  \edef\HyRef@currentHtag{\lemmaautorefname~}%
+  % \hyper@link@[link]
+  %   {\expandafter\@fifthoffive\r@lem:1\@empty\@empty\@empty}
+  %   {\expandafter\@fourthoffive\r@lem:1\@empty\@empty\@empty}
+  %   {%
+  %     \HyRef@currentHtag
+  %     \expandafter\@firstoffive\r@lem:1\@empty\@empty\@empty
+  %     \null
+  %   }%
+      \begingroup
+        \protected@edef\Hy@tempa{}%
+        \edef\Hy@tempb{lemma.1}%
+        % \toks@{\endgroup \hyper@link {link}}
+        % \toks@{\endgroup \hyper@link {link}{lemma.1}{#4}}%
+      % \the\toks@
+      \endgroup \hyper@link {link}{lemma.1}{#4}
+\endgroup
+
+\begingroup
+  \edef\HyRef@currentHtag{\lemmaautorefname~}%
+  \hyper@link{link}{lemma.1}
+    {%
+      \HyRef@currentHtag
+      \expandafter\@firstoffive\r@lem:1\@empty\@empty\@empty
+      \null
+    }%
+\endgroup
+
+% \hyper@link is defined by driver files, e.g., hpdftex.def
+\def\hyper@link#1#2#3{%
+  \Hy@VerboseLinkStart{#1}{#2}%
+  \ltx@IfUndefined{@#1bordercolor}{%
+    \let\CurrentBorderColor\relax
+  }{%
+    \edef\CurrentBorderColor{\csname @#1bordercolor\endcsname}%
+  }%
+  \find@pdflink{#1}{#2}#3\Hy@xspace@end
+  \close@pdflink
+}
