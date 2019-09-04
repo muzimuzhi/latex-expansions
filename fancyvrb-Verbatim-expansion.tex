@@ -1,0 +1,189 @@
+\begin{Verbatim}
+  First verbatim line.
+  Second line.
+  Third verbatim line.\label{vrb:3}
+\end{Verbatim}
+
+% this defines "Verbatim" environment
+\DefineVerbatimEnvironment{Verbatim}{Verbatim}{}
+
+\def\DefineVerbatimEnvironment#1#2#3{%
+  \@namedef{#1}{\FV@Environment{#3}{#2}}%
+  \@namedef{end#1}{\@nameuse{FVE@#2}}%
+  \@namedef{#1*}{\FV@Environment{#3,showspaces}{#2}}%
+  \@namedef{end#1*}{\@nameuse{FVE@#2}}}
+
+expand \DefineVerbatimEnvironment, #1 = "Verbatim", #2 = "Verbatim", #3 = ""
+
+% ignore "Verbatim*" related
+\@namedef{Verbatim}{\FV@Environment{}{Verbatim}}%
+\@namedef{endVerbatim}{\@nameuse{FVE@Verbatim}}%
+% \@namedef{Verbatim*}{\FV@Environment{,showspaces}{Verbatim}}%
+% \@namedef{endVerbatim*}{\@nameuse{FVE@Verbatim}}
+
+\def\FV@Environment#1#2{%
+  \def\FV@KeyValues{#1}%
+  \catcode`\^^M=\active
+  \@ifnextchar[%
+    {\catcode`\^^M=5 \FV@GetKeyValues{\@nameuse{FVB@#2}}}%
+    {\catcode`\^^M=5 \@nameuse{FVB@#2}}}
+
+expand \@namedef, then \Verbatim
+
+\FV@Environment{}{Verbatim}
+
+expand \FV@Environment, #1 = "", #2 = "Verbatim"
+expand \@ifnextchar
+ignore \FV@GetKeyValues
+
+\def\FV@KeyValues{}
+\catcode`\^^M=5
+\@nameuse{FVB@Verbatim}
+
+\def\FVB@Verbatim{\FV@VerbatimBegin\FV@Scan}
+
+expand \FVB@Verbatim
+
+\def\FV@KeyValues{}
+\catcode`\^^M=5
+\FV@VerbatimBegin\FV@Scan
+
+\def\FV@VerbatimBegin{\FV@List\z@}
+
+expand \FV@VerbatimBegin
+
+\def\FV@KeyValues{}
+\catcode`\^^M=5
+\FV@List\z@
+\FV@Scan
+
+\def\FV@List#1{%
+  \begingroup
+  \FV@UseKeyValues
+  \FV@LeaveVMode
+  \if@inlabel\else\setbox\@labels=\box\voidb@x\fi
+  \FV@ListNesting{#1}%
+  \FV@ListParameterHook
+  \FV@ListVSpace
+  \FV@SetLineWidth
+  \FV@InterLinePenalty
+  \let\FV@ProcessLine\FV@ListProcessLine@i
+  \FV@CatCodes
+  \FV@FormattingPrep
+  \FV@ObeyTabsInit
+  \FV@BeginListFrame}
+
+expand \FV@List
+expand \FV@UseKeyValues
+ignore \FV@LeaveVMode to \FV@BeginListFrame
+
+\def\FV@KeyValues{}
+\catcode`\^^M=5
+\begingroup
+  \FV@UseKeyValues % none
+  \FV@LeaveVMode   % 
+  \if@inlabel\else\setbox\@labels=\box\voidb@x\fi
+  \FV@ListNesting{\z@}%
+  \FV@ListParameterHook
+  \FV@ListVSpace
+  \FV@SetLineWidth
+  \FV@InterLinePenalty
+  \let\FV@ProcessLine\FV@ListProcessLine@i
+  \FV@CatCodes
+  \FV@FormattingPrep
+  \FV@ObeyTabsInit
+  \FV@BeginListFrame
+  \FV@Scan  % step 745
+
+\def\FV@Scan{%
+    \FV@CatCodes
+    \VerbatimEnvironment
+    \FV@DefineCheckEnd
+    \FV@BeginScanning}
+
+expand \FV@Scan
+ignore \VerbatimEnvironment and \FV@DefineCheckEnd
+
+\begingroup
+\catcode`\^^M=\active
+  \gdef\FV@BeginScanning#1^^M{%
+    \def\@tempa{#1}\ifx\@tempa\@empty\else\FV@BadBeginError\fi%
+    \FV@GetLine}%
+\endgroup
+
+%TODO
+
+\def\FV@GetLine{\@noligs\expandafter\FV@CheckScan\FancyVerbGetLine}
+
+\begingroup
+\catcode`\^^M=\active%
+\gdef\FancyVerbGetLine#1^^M{%
+  \@nil%
+  \FV@CheckEnd{#1}%
+  \ifx\@tempa\FV@EnvironName%            % True if end is found
+    \ifx\@tempb\FV@@@CheckEnd\else\FV@BadEndError\fi%
+    \let\next\FV@EndScanning%
+  \else%
+    \def\FV@Line{#1}%
+    \def\next{\FV@PreProcessLine\FV@GetLine}%
+  \fi%
+  \next}%
+\endgroup
+
+\def\FV@Line{First verbatim line.}
+\FV@PreProcessLine\FV@GetLine
+
+\def\FV@PreProcessLine{%
+  \global\advance\FV@CodeLineNo\@ne
+  \FV@FindStartStop}
+\def\FV@FindStartStop{\FV@DefineFindStart\FV@FindStartStop}
+
+\def\FV@Line{First verbatim line.}
+\FV@DefineFindStart\FV@FindStartStop\FV@GetLine
+
+\def\FV@DefineFindStart{%
+  \ifx\FancyVerbStartString\relax
+    \ifnum\FancyVerbStartNum<\tw@
+      \FV@DefineFindStop
+    \else
+      \let\FV@FindStartStop\FV@FindStartNum
+    \fi
+  \else
+    \let\FV@FindStartStop\FV@FindStartString
+  \fi}
+
+\def\FV@Line{First verbatim line.}
+\FV@DefineFindStop\FV@FindStartStop\FV@GetLine
+
+\def\FV@DefineFindStop{%
+  \ifx\FancyVerbStopString\relax
+    \ifnum\FancyVerbStopNum<\@ne
+      \let\FV@FindStartStop\FV@@PreProcessLine
+    \else
+      \let\FV@FindStartStop\FV@FindStopNum
+    \fi
+  \else
+    \let\FV@FindStartStop\FV@FindStopString
+  \fi}
+
+\def\FV@Line{First verbatim line.}
+\FV@@PreProcessLine\FV@GetLine
+
+\def\FV@@PreProcessLine{%
+  \FV@StepLineNo
+  \FV@Gobble
+  \expandafter\FV@ProcessLine\expandafter{\FV@Line}}
+
+\def\FV@StepLineNo{%
+  \FV@SetLineNo%
+  \def\FV@StepLineNo{%
+    \if@FV@NumberBlankLines%
+      \FV@refstepcounter{FancyVerbLine}%
+    \else%
+      \ifx\FV@Line\empty%
+      \else%
+        \FV@refstepcounter{FancyVerbLine}%
+      \fi%
+    \fi}%
+  \FV@StepLineNo}
+

@@ -1,0 +1,397 @@
+this is the first step that `unravel` package cannot handle
+
+\FV@BeginScanning ^^M
+first^^M
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\catcode`\^^M=\active
+  \gdef\FV@BeginScanning#1^^M{%
+    \def\@tempa{#1}\ifx\@tempa\@empty\else\FV@BadBeginError\fi%
+    \FV@GetLine}%
+\endgroup
+
+expand \FV@BeginScanning, #1 = ""
+
+\FV@GetLine
+first^^M
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\def\FV@GetLine{\@noligs\expandafter\FV@CheckScan\FancyVerbGetLine}
+% \@noligs, disable ligatures
+
+expand \FV@GetLine
+
+\expandafter\FV@CheckScan\FancyVerbGetLine
+first^^M
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\begingroup
+\catcode`\^^M=\active%
+\gdef\FancyVerbGetLine#1^^M{%
+  \@nil%
+  \FV@CheckEnd{#1}%
+  \ifx\@tempa\FV@EnvironName%            % True if end is found
+    \ifx\@tempb\FV@@@CheckEnd\else\FV@BadEndError\fi%
+    \let\next\FV@EndScanning%
+  \else%
+    \def\FV@Line{#1}%
+    \def\next{\FV@PreProcessLine\FancyVerbGetLine}%
+  \fi%
+  \next}%
+\endgroup
+
+expand \FancyVerbGetLine once, #1 = "first"
+
+\expandafter\FV@CheckScan
+\@nil%
+\FV@CheckEnd{first}%
+\ifx\@tempa\FV@EnvironName%            % True if end is found
+  \ifx\@tempb\FV@@@CheckEnd\else\FV@BadEndError\fi%
+  \let\next\FV@EndScanning%
+\else%
+  \def\FV@Line{first}%
+  \def\next{\FV@PreProcessLine\FancyVerbGetLine}%
+\fi%
+\next
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\def\FV@CheckScan#1{\ifx\@nil#1\@empty\else\expandafter\FV@EOF\fi}
+
+expand \FV@CheckScan, #1 = "\@nil"
+
+\@empty%  \ifx is true
+\FV@CheckEnd{first}%
+\ifx\@tempa\FV@EnvironName%            % True if end is found
+  \ifx\@tempb\FV@@@CheckEnd\else\FV@BadEndError\fi%
+  \let\next\FV@EndScanning%
+\else%
+  \def\FV@Line{first}%
+  \def\next{\FV@PreProcessLine\FancyVerbGetLine}%
+\fi%
+\next
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+
+!gdef!FV@CheckEnd@iii#1[!FV@@CheckEnd#1\end{}!@nil]
+\FV@CheckEnd=macro:#1->\FV@@CheckEnd #1\end{}\@nil
+
+expand \FV@CheckEnd, #1 = "first"
+% defined by \FV@DefineCheckEnd, contained in \FV@Scan
+        % \let\FV@CheckEnd\FV@CheckEnd@iii
+        % \let\FV@@CheckEnd\FV@@CheckEnd@iii
+        % \let\FV@@@CheckEnd\FV@@@CheckEnd@iii
+
+\FV@@CheckEnd first\end{}\@nil
+\ifx\@tempa\FV@EnvironName%            % True if end is found
+  \ifx\@tempb\FV@@@CheckEnd\else\FV@BadEndError\fi%
+  \let\next\FV@EndScanning%
+\else%
+  \def\FV@Line{first}%
+  \def\next{\FV@PreProcessLine\FancyVerbGetLine}%
+\fi%
+\next
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\FV@@CheckEnd=macro:#1\end{#2}#3\@nil ->%
+  \def \@tempa [#2]\def \@tempb [#3]
+!gdef!FV@@CheckEnd@iii#1\end{#2}#3!@nil[!def!@tempa[#2]!def!@tempb[#3]]
+
+expand \FV@@CheckEnd, #1 = "first", #2 = "", #3 = ""
+
+\def\@tempa{}
+\def\@tempb{}
+\ifx\@tempa\FV@EnvironName%            % True if end is found
+  \ifx\@tempb\FV@@@CheckEnd\else\FV@BadEndError\fi%
+  \let\next\FV@EndScanning%
+\else%
+  \def\FV@Line{first}%
+  \def\next{\FV@PreProcessLine\FancyVerbGetLine}%
+\fi%
+\next
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+expand \ifx, "false"
+
+\def\@tempa{}
+\def\@tempb{}
+\def\FV@Line{first}%
+\def\next{\FV@PreProcessLine\FancyVerbGetLine}%
+\next
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+expand \def
+expand \next
+
+\def\@tempa{}
+\def\@tempb{}
+\def\FV@Line{first}%
+\FV@PreProcessLine\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\def\FV@PreProcessLine{%
+  \global\advance\FV@CodeLineNo\@ne
+  \FV@FindStartStop}
+
+expand \FV@PreProcessLine
+
+\def\@tempa{}
+\def\@tempb{}
+\def\FV@Line{first}%
+\global\advance\FV@CodeLineNo\@ne
+\FV@FindStartStop
+\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\def\FV@FindStartStop{\FV@DefineFindStart\FV@FindStartStop}
+
+expand \FV@FindStartStop
+
+\def\@tempa{}
+\def\@tempb{}
+\def\FV@Line{first}%
+\global\advance\FV@CodeLineNo\@ne
+\FV@DefineFindStart\FV@FindStartStop
+\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\def\FV@DefineFindStart{%
+  \ifx\FancyVerbStartString\relax
+    \ifnum\FancyVerbStartNum<\tw@
+      \FV@DefineFindStop
+    \else
+      \let\FV@FindStartStop\FV@FindStartNum
+    \fi
+  \else
+    \let\FV@FindStartStop\FV@FindStartString
+  \fi}
+
+expand \FV@DefineFindStart
+
+\def\FV@Line{first}%
+\global\advance\FV@CodeLineNo\@ne
+\ifx\FancyVerbStartString\relax%  true
+  \ifnum\FancyVerbStartNum<\tw@%  0.0pt < 2
+    \FV@DefineFindStop
+  \else
+    \let\FV@FindStartStop\FV@FindStartNum
+  \fi
+\else
+  \let\FV@FindStartStop\FV@FindStartString
+\fi
+\FV@FindStartStop
+\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+expand \ifx and \ifnum
+
+\def\FV@Line{first}%
+\global\advance\FV@CodeLineNo\@ne
+\FV@DefineFindStop
+\FV@FindStartStop
+\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\def\FV@DefineFindStop{%
+  \ifx\FancyVerbStopString\relax
+    \ifnum\FancyVerbStopNum<\@ne
+      \let\FV@FindStartStop\FV@@PreProcessLine
+    \else
+      \let\FV@FindStartStop\FV@FindStopNum
+    \fi
+  \else
+    \let\FV@FindStartStop\FV@FindStopString
+  \fi}
+
+expand \FV@DefineFindStop
+
+\def\FV@Line{first}%
+\global\advance\FV@CodeLineNo\@ne
+\ifx\FancyVerbStopString\relax%  true
+  \ifnum\FancyVerbStopNum<\@ne%  true, 0pt < 1
+    \let\FV@FindStartStop\FV@@PreProcessLine
+  \else
+    \let\FV@FindStartStop\FV@FindStopNum
+  \fi
+\else
+  \let\FV@FindStartStop\FV@FindStopString
+\fi
+\FV@FindStartStop
+\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+expand \ifx and \ifnum
+expand \let
+
+\def\FV@Line{first}%
+\global\advance\FV@CodeLineNo\@ne
+\FV@@PreProcessLine
+\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\def\FV@@PreProcessLine{%
+  \FV@StepLineNo
+  \FV@Gobble
+  \expandafter\FV@ProcessLine\expandafter{\FV@Line}}
+
+expand \FV@@PreProcessLine
+
+\def\FV@Line{first}%
+\global\advance\FV@CodeLineNo\@ne
+\FV@StepLineNo
+\FV@Gobble%  \relax
+\expandafter\FV@ProcessLine\expandafter{\FV@Line}
+\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+skip \FV@StepLineNo and \FV@Gobble
+expand \expandafter, \expandafter, and \FV@Line
+
+\def\FV@Line{first}%
+\global\advance\FV@CodeLineNo\@ne
+\FV@ProcessLine{first}
+\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\def\FV@ListProcessLine@i#1{%
+  \hbox{%
+    \ifvoid\@labels\else
+      \hbox to \z@{\kern\@totalleftmargin\box\@labels\hss}%
+    \fi
+    \FV@ListProcessLine{#1}}%
+  \let\FV@ProcessLine\FV@ListProcessLine@ii}
+
+expand \FV@ProcessLine, #1 = "first"
+% let to \FV@ListProcessLine@i in \FV@List, in \FV@VerbatimBegin, in \FVB@Verbatim
+
+\def\FV@Line{first}%
+\global\advance\FV@CodeLineNo\@ne
+\hbox{%
+  \ifvoid\@labels\else% true
+    \hbox to \z@{\kern\@totalleftmargin\box\@labels\hss}%
+  \fi
+  \FV@ListProcessLine{first}}%
+\let\FV@ProcessLine\FV@ListProcessLine@ii
+\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+expand \ifvoid
+
+\def\FV@Line{first}%
+\global\advance\FV@CodeLineNo\@ne
+\hbox{%
+  \FV@ListProcessLine{first}}%
+\let\FV@ProcessLine\FV@ListProcessLine@ii
+\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+\def\FV@ListProcessLine#1{%
+  \hbox to \hsize{%
+    \kern\leftmargin
+    \hbox to \linewidth{%
+      \FV@LeftListNumber
+      \FV@LeftListFrame
+      \FancyVerbFormatLine{#1}\hss
+%% DG/SR modification begin - Jan. 28, 1998 (for numbers=right add-on)
+%%      \FV@RightListFrame}%
+      \FV@RightListFrame
+      \FV@RightListNumber}%
+%% DG/SR modification end
+    \hss}}
+
+expand \FV@ListProcessLine, #1 = "first"
+
+\def\FV@Line{first}%
+\global\advance\FV@CodeLineNo\@ne
+\hbox{%
+  \hbox to \hsize{%
+    \kern\leftmargin
+    \hbox to \linewidth{%
+      \FV@LeftListNumber
+      \FV@LeftListFrame
+      \FancyVerbFormatLine{first}\hss
+  %% DG/SR modification begin - Jan. 28, 1998 (for numbers=right add-on)
+  %%      \FV@RightListFrame}%
+      \FV@RightListFrame
+      \FV@RightListNumber}%
+  %% DG/SR modification end
+    \hss}%
+}%
+\let\FV@ProcessLine\FV@ListProcessLine@ii
+\FancyVerbGetLine
+second^^M
+third^^M
+\end{Verbatim}^^M
+
+
+
+
+
+%TODO begin from \FancyVerbFormatLine
+
+\def\FancyVerbFormatLine#1{\FV@ObeyTabs{#1}}
+
+expand \FancyVerbFormatLine, #1 = 'first'
+
+\FV@ObeyTabs{first}
+
+\let\FV@ObeyTabsInit\relax%  by \fvset{obeytabs=false}
+
+
+
+
+
+%TODO other definitions
+
+\FV@@@CheckEnd=macro:->\end{}
+!gdef!FV@@@CheckEnd@iii[\end{}]
+
+\def\FV@ListProcessLine@ii#1{%
+  \setbox\@tempboxa=\FV@ListProcessLine{#1}%
+  \let\FV@ProcessLine\FV@ListProcessLine@iii}
+\def\FV@ListProcessLine@iii#1{%
+  {\advance\interlinepenalty\clubpenalty\penalty\interlinepenalty}%
+  \box\@tempboxa
+  \setbox\@tempboxa=\FV@ListProcessLine{#1}%
+  \let\FV@ProcessLine\FV@ListProcessLine@iv}
+\def\FV@ListProcessLine@iv#1{%
+  \penalty\interlinepenalty
+  \box\@tempboxa
+  \setbox\@tempboxa=\FV@ListProcessLine{#1}}%
