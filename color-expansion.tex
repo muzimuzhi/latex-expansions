@@ -1,0 +1,180 @@
+% use color by color specification
+\color[rgb]{0.8,0.85,1}
+
+\DeclareRobustCommand\color{%
+  \@ifnextchar[\@undeclaredcolor\@declaredcolor}
+
+
+% expand \color
+\@undeclaredcolor[rgb]{0.8,0.85,1}
+
+\def\@undeclaredcolor[#1]#2{%
+  \@ifundefined{color@#1}%
+    {\c@lor@error{model `#1'}}%
+    {\csname color@#1\endcsname\current@color{#2}%
+     \set@color}%
+  \ignorespaces}
+
+
+% expand \@undeclaredcolor, #1 = "rgb", #2 = "0.8,0.85,1"
+\csname color@rgb\endcsname\current@color{0.8,0.85,1}%
+\set@color
+\ignorespaces
+
+% expand \csname
+\color@rgb\current@color{0.8,0.85,1}%
+\set@color
+\ignorespaces
+
+% from xetex.def, assume engine xetex is used
+\def\color@rgb#1#2{\c@lor@@rgb#2\@@#1}
+\def\c@lor@@rgb#1,#2,#3\@@#4{%
+  \c@lor@arg{#1}%
+  \c@lor@arg{#2}%
+  \c@lor@arg{#3}%
+  \edef#4{rgb #1 #2 #3}%
+  }
+
+
+% expand \color@rgb, #1 = "\current@color", #2 = "0.8,0.85,1"
+\c@lor@@rgb0.8,0.85,1\@@\current@color
+\set@color
+\ignorespaces
+
+% expand \c@lor@@rgb, #1 = "0.8", #2 = "0.85", 
+%                     #3 = "1", #4 = "\current@color"
+\c@lor@arg{0.8}%
+\c@lor@arg{0.85}%
+\c@lor@arg{1}%
+\edef\current@color{rgb 0.8 0.85 1}%
+\set@color
+\ignorespaces
+
+% from xetex.def
+\def\c@lor@arg#1{%
+  \dimen@#1\p@
+  \ifdim\dimen@<\z@\dimen@\maxdimen\fi
+  \ifdim\dimen@>\p@
+    \PackageError{color}{Argument `#1' not in range [0,1]}\@ehd
+  \fi}
+\def\set@color{%
+    \special{color push  \current@color}%
+    \aftergroup\reset@color}
+\def\reset@color{\special{color pop}}
+
+% skip three \c@lor@arg
+% expand \edef
+% expand \set@color, \reset@color
+\current@color = "rgb 0.8 0.85 1"
+\special{color push rgb 0.8 0.85 1}%
+\aftergroup{\special{color pop}}
+\ignorespaces
+
+
+% =========================================
+% define new named color
+\definecolor{light-blue}{rgb}{0.8,0.85,1}
+
+\def\definecolor#1#2#3{%
+  \@ifundefined{color@#2}%
+    {\c@lor@error{model `#2'}}%
+    {\@ifundefined{\string\color @#1}{}%
+      {\PackageInfo{color}{Redefining color #1}}%
+     \csname color@#2\expandafter\endcsname
+         \csname\string\color @#1\endcsname{#3}}}
+
+% expand \definecolor, #1 = "light-blue", #2 = "rgb", #3 = "0.8,0.85,1"
+% skip two \@ifundefined
+\@ifundefined{\string\color @#1}{}%
+  {\PackageInfo{color}{Redefining color #1}}%
+\csname color@#2\expandafter\endcsname
+   \csname\string\color @#1\endcsname{#3}
+
+% expand \csname
+\color@rgb"\\color@light-blue"{0.8,0.85,1}
+
+\edef"\\color@light-blue"{rgb 0.8 0.85 1}%
+
+% =========================================
+% use named color
+\color{light-blue}
+
+% expand \color
+\@declaredcolor{light-blue}
+
+\def\@declaredcolor#1{%
+  \@ifundefined{\string\color @#1}%
+    {\c@lor@error{`#1'}}%
+    {\expandafter\let\expandafter\current@color
+     \csname\string\color @#1\endcsname
+     \set@color}%
+  \ignorespaces}
+
+
+% expand \@declaredcolor, #1 = "light-blue"
+% \@ifundefined is false
+\expandafter\let\expandafter\current@color
+ \csname\string\color @light-blue\endcsname
+ \set@color
+\ignorespaces
+
+% expand \expandafter
+\let\current@color"\\color@light-blue"
+\set@color
+\ignorespaces
+
+
+% =========================================
+% use pdftex engine
+\color[rgb]{0.8,0.85,1}
+
+% from pdftex.def
+\def\color@rgb#1#2{\c@lor@@rgb#2\@@#1}% the same as in "xetex.def"
+\def\c@lor@@rgb#1,#2,#3\@@#4{%
+  \c@lor@arg{#1}%
+  \c@lor@arg{#2}%
+  \c@lor@arg{#3}%
+  \edef#4{#1 #2 #3 rg #1 #2 #3 RG}%
+  }
+\def\set@color{%
+  \pdfcolorstack\@pdfcolorstack push{\current@color}%
+  \aftergroup\reset@color}
+\def\reset@color{\pdfcolorstack\@pdfcolorstack pop\relax}
+\chardef\main@pdfcolorstack=0 %
+\@ifundefined{@pdfcolorstack}
+  {\def\@pdfcolorstack{\main@pdfcolorstack}}{}
+
+
+% expand till \c@lor@@rgb
+\c@lor@@rgb0.8,0.85,1\@@\current@color
+\set@color
+\ignorespaces
+
+% expand \c@lor@@rgb, #1 = "0.8", #2 = "0.85", 
+%                     #3 = "1", #4 = "\current@color"
+\c@lor@arg{0.8}%
+\c@lor@arg{0.85}%
+\c@lor@arg{1}%
+\edef\current@color{0.8 0.85 1 rg 0.8 0.85 1 RG}%
+\set@color
+\ignorespaces
+
+% skip three \c@lor@arg
+% expand \set@color
+\current@color = "0.8 0.85 1 rg 0.8 0.85 1 RG"
+\pdfcolorstack 0 push{0.8 0.85 1 rg 0.8 0.85 1 RG}%
+\aftergroup{\pdfcolorstack0 pop\relax}
+
+
+% =============================================
+% summary
+
+% xetex
+\current@color  = "rgb 0.8 0.85 1"
+\set@color      = \special{color push \current@color}
+\reset@color    = \special{color pop}
+
+% pdftex
+\current@color  = "0.8 0.85 1 rg 0.8 0.85 1 RG"
+\set@color      = \pdfcolorstack 0 push{\current@color}
+\reset@color    = \pdfcolorstack 0 pop\relax
