@@ -1,0 +1,128 @@
+\SaveVerb[options]{name}|code|
+
+
+\def\SaveVerb{\FV@Command{}{SaveVerb}}
+
+% expand \SaveVerb
+\FV@Command{}{SaveVerb}
+[options]{name}|code|
+
+
+\def\FV@Command#1#2{%
+  \@ifstar
+    {\def\FV@KeyValues{#1,showspaces}\FV@@Command{#2}}%
+    {\def\FV@KeyValues{#1}\FV@@Command{#2}}}
+
+% expand \FV@Command, #1 = "", #2 = "SaveVerb"
+% expand \@ifstar, false
+\def\FV@KeyValues{}
+\FV@@Command{SaveVerb}
+[options]{name}|code|
+
+
+\def\FV@@Command#1{%
+  \@ifnextchar[%
+    {\FV@GetKeyValues{\@nameuse{FVC@#1}}}%
+    {\@nameuse{FVC@#1}}}
+
+% expand \FV@@Command, #1 = "SaveVerb"
+% expand \@ifnextchar, true
+Set \FV@KeyValues -> ""
+\FV@GetKeyValues{\@nameuse{FVC@SaveVerb}}
+[options]{name}|code|
+
+
+\def\FV@GetKeyValues#1[#2]{%
+  \expandafter\def\expandafter\FV@KeyValues\expandafter{\FV@KeyValues,#2}#1}
+
+% expand \FV@GetKeyValues, #1 = "\@nameuse{FVC@SaveVerb}", #2 = "options"
+\def\FV@KeyValues{,options}
+\@nameuse{FVC@SaveVerb}
+{name}|code|
+
+
+% expand \@nameuse
+\def\FV@KeyValues{,options}
+\FVC@SaveVerb
+{name}|code|
+
+
+\begingroup
+\catcode`\^^M=\active%
+\gdef\FVC@SaveVerb#1#2{%
+  \@namedef{FV@SV@#1}{}%
+  \begingroup%
+    \FV@UseKeyValues%
+    \FV@CatCodes%
+    \outer\def^^M{\FV@EOL}%
+    \global\let\@tempg\FancyVerbAfterSave%
+    \catcode`#2=12%
+    \def\@tempa{\def\FancyVerbGetVerb####1####2}%
+    \expandafter\@tempa\string#2{\endgroup\@namedef{FV@SV@#1}{##2}\@tempg}%
+    \FancyVerbGetVerb\FV@EOL}%
+\endgroup
+
+% expand \FVC@SaveVerb, #1 = "name", #2 = "|"
+\@namedef{FV@SV@name}{}%
+\begingroup%
+  \FV@UseKeyValues%
+  \FV@CatCodes%
+  \outer\def^^M{\FV@EOL}%
+  \global\let\@tempg\FancyVerbAfterSave%
+  \catcode`#2=12%
+  \def\@tempa{\def\FancyVerbGetVerb####1####2}%
+  \expandafter\@tempa\string#2{\endgroup\@namedef{FV@SV@#1}{##2}\@tempg}%
+  \FancyVerbGetVerb\FV@EOL
+
+% by using \begingroup ... \global\let\@tempg\FancyVerbAfterSave ... \endgroup,
+% every option passed by \FV@UseKeyValues, except "aftersave" is canceled
+
+
+
+
+
+\UseVerb{name}
+
+
+% expand \UseVerb
+\FV@Command{}{UseVerb}
+{name}
+
+\def\FV@Command#1#2{%
+  \@ifstar
+    {\def\FV@KeyValues{#1,showspaces}\FV@@Command{#2}}%
+    {\def\FV@KeyValues{#1}\FV@@Command{#2}}}
+
+% expand \FV@Command, #1 = "", #2 = "UseVerb"
+% expand \@ifstar, false
+\def\FV@KeyValues{}
+\FV@@Command{UseVerb}
+{name}
+
+
+\def\FV@@Command#1{%
+  \@ifnextchar[%
+    {\FV@GetKeyValues{\@nameuse{FVC@#1}}}%
+    {\@nameuse{FVC@#1}}}
+
+% expand \FV@@Command, #1 = "UseVerb"
+% expand \@ifnextchar, false
+\@nameuse{FVC@UseVerb}
+{name}
+
+
+\def\FVC@UseVerb#1{%
+  \@ifundefined{FV@SV@#1}%
+    {\FV@Error{Short verbatim text never saved to name `#1'}\FV@eha}%
+    {\FV@UseVerb{\@nameuse{FV@SV@#1}}}}
+
+% expand \FVC@UseVerb, #1 = "name"
+% expand \@ifundefined, false
+\FV@UseVerb{\@nameuse{FV@SV@name}}
+
+
+\def\FV@UseVerb#1{\mbox{\FV@UseKeyValues\FV@FormattingPrep#1}}
+
+% expand \FV@UseVerb
+\mbox{\FV@UseKeyValues\FV@FormattingPrep\@nameuse{FV@SV@name}}
+
