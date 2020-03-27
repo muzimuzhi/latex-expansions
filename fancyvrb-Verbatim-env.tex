@@ -1,8 +1,9 @@
 \begin{Verbatim}
-  First verbatim line.
-  Second line.
-  Third verbatim line.\label{vrb:3}
+First verbatim line.
+Second line.
+Third verbatim line.\label{vrb:3}
 \end{Verbatim}
+
 
 % this defines "Verbatim" environment
 \DefineVerbatimEnvironment{Verbatim}{Verbatim}{}
@@ -13,13 +14,20 @@
   \@namedef{#1*}{\FV@Environment{#3,showspaces}{#2}}%
   \@namedef{end#1*}{\@nameuse{FVE@#2}}}
 
-expand \DefineVerbatimEnvironment, #1 = "Verbatim", #2 = "Verbatim", #3 = ""
-
+% expand \DefineVerbatimEnvironment, #1 = "Verbatim", #2 = "Verbatim", #3 = ""
 % ignore "Verbatim*" related
 \@namedef{Verbatim}{\FV@Environment{}{Verbatim}}%
 \@namedef{endVerbatim}{\@nameuse{FVE@Verbatim}}%
-% \@namedef{Verbatim*}{\FV@Environment{,showspaces}{Verbatim}}%
-% \@namedef{endVerbatim*}{\@nameuse{FVE@Verbatim}}
+
+
+% expand \@namedef
+\Verbatim -> \FV@Environment{}{Verbatim}
+\endVerbatim -> \@nameuse{FVE@Verbatim}
+
+
+% expand \Verbatim
+\FV@Environment{}{Verbatim}
+
 
 \def\FV@Environment#1#2{%
   \def\FV@KeyValues{#1}%
@@ -28,34 +36,29 @@ expand \DefineVerbatimEnvironment, #1 = "Verbatim", #2 = "Verbatim", #3 = ""
     {\catcode`\^^M=5 \FV@GetKeyValues{\@nameuse{FVB@#2}}}%
     {\catcode`\^^M=5 \@nameuse{FVB@#2}}}
 
-expand \@namedef, then \Verbatim
-
-\FV@Environment{}{Verbatim}
-
-expand \FV@Environment, #1 = "", #2 = "Verbatim"
-expand \@ifnextchar
-ignore \FV@GetKeyValues
-
-\def\FV@KeyValues{}
-\catcode`\^^M=5
+% expand \FV@Environment, #1 = "", #2 = "Verbatim"
+% expand \@ifnextchar, false
+% ignore \FV@GetKeyValues
+\FV@KeyValues -> ""
 \@nameuse{FVB@Verbatim}
+
 
 \def\FVB@Verbatim{\FV@VerbatimBegin\FV@Scan}
 
-expand \FVB@Verbatim
-
+% expand \FVB@Verbatim
 \def\FV@KeyValues{}
 \catcode`\^^M=5
 \FV@VerbatimBegin\FV@Scan
 
+
 \def\FV@VerbatimBegin{\FV@List\z@}
 
-expand \FV@VerbatimBegin
-
+% expand \FV@VerbatimBegin
 \def\FV@KeyValues{}
 \catcode`\^^M=5
 \FV@List\z@
 \FV@Scan
+
 
 \def\FV@List#1{%
   \begingroup
@@ -73,27 +76,14 @@ expand \FV@VerbatimBegin
   \FV@ObeyTabsInit
   \FV@BeginListFrame}
 
-expand \FV@List
-expand \FV@UseKeyValues
-ignore \FV@LeaveVMode to \FV@BeginListFrame
-
+% expand \FV@List, #1 = "\z@"
+% expand \FV@UseKeyValues
+% ignore \FV@LeaveVMode to \FV@BeginListFrame
 \def\FV@KeyValues{}
 \catcode`\^^M=5
 \begingroup
-  \FV@UseKeyValues % none
-  \FV@LeaveVMode   % 
-  \if@inlabel\else\setbox\@labels=\box\voidb@x\fi
-  \FV@ListNesting{\z@}%
-  \FV@ListParameterHook
-  \FV@ListVSpace
-  \FV@SetLineWidth
-  \FV@InterLinePenalty
-  \let\FV@ProcessLine\FV@ListProcessLine@i
-  \FV@CatCodes
-  \FV@FormattingPrep
-  \FV@ObeyTabsInit
-  \FV@BeginListFrame
-  \FV@Scan  % step 745
+\FV@Scan  % step 745
+
 
 \def\FV@Scan{%
     \FV@CatCodes
@@ -101,8 +91,10 @@ ignore \FV@LeaveVMode to \FV@BeginListFrame
     \FV@DefineCheckEnd
     \FV@BeginScanning}
 
-expand \FV@Scan
-ignore \VerbatimEnvironment and \FV@DefineCheckEnd
+% expand \FV@Scan
+% ignore \FV@CatCodes to \FV@DefineCheckEnd
+\FV@BeginScanning
+
 
 \begingroup
 \catcode`\^^M=\active
