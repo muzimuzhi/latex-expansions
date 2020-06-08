@@ -1,0 +1,111 @@
+\begin{multline*}
+f = \begin{matrix} x \end{matrix}
+\end{multline*}
+
+
+\newenvironment{multline*}{\start@multline\st@rredtrue}{\endmultline}
+
+% expand \multline*
+\start@multline\st@rredtrue
+f = \begin{matrix} x \end{matrix}
+\end{multline*}
+
+
+\def\start@multline#1{%
+    \RIfM@ % \def\RIfM@{\relax\ifmmode}
+        \nomath@env
+        \DN@{\@namedef{end\@currenvir}{}\@gobble}% \def\DN@{\def\next@}
+    \else
+        $$%
+        #1%
+        \ifst@rred
+            \nonumber
+        \else
+            \global\@eqnswtrue
+        \fi
+        \let\next@\multline@
+    \fi
+    \collect@body\next@
+}
+$$
+
+% expand \start@multline, #1 = "\st@rredtrue"
+% expand \RIfM@, false
+\double@dollar%
+\st@rredtrue
+\ifst@rred
+    \nonumber
+\else
+    \global\@eqnswtrue
+\fi
+\let\next@\multline@
+\collect@body\next@
+f = \begin{matrix} x \end{matrix}
+\end{multline*}
+
+
+% expand \start@multline, #1 = "\st@rredtrue"
+% expand \RIfM@, false
+% expand \st@rredtrue, skip until \nonumber
+% \next@ -> let to \multline@
+\double@dollar
+\collect@body\next@
+f = \begin{matrix} x \end{matrix}
+\end{multline*}
+
+
+\def\collect@body#1{%
+  \@envbody{\@xp#1\@xp{\the\@envbody}}%
+  \edef\process@envbody{\the\@envbody\@nx\end{\@currenvir}}%
+  \@envbody\@emptytoks \def\begin@stack{b}%
+  \begingroup
+  \@xp\let\csname\@currenvir\endcsname\collect@@body
+  \edef\process@envbody{\@xp\@nx\csname\@currenvir\endcsname}%
+  \process@envbody % equivalent to \collect@@body
+}
+
+% expand \collect@body, #1 = "\next@"
+% \next@ -> let to \multline@
+% \@envbody -> toks "\@xp\next@\@xp{\the\@envbody}"
+% \process@envbody -> "\@xp\next@\@xp{\the\@envbody}\end{multline*}"
+% \@envbody -> toks ""
+% \begin@stack -> "b"
+% (start new group)
+% (local) \multline* -> let to \collect@@body
+% (local) \process@envbody -> "\multline*"
+\double@dollar
+\begingroup
+\process@envbody % equivalent to \collect@@body
+f = \begin{matrix} x \end{matrix}
+\end{multline*}
+
+
+\def\collect@@body#1\end#2{%
+  \edef\begin@stack{\push@begins#1\begin\end \@xp\@gobble\begin@stack}%
+  \ifx\@empty\begin@stack
+    \endgroup
+    \@checkend{#2}%
+    \addto@envbody{#1}%
+  \else
+    \addto@envbody{#1\end{#2}}%
+  \fi
+  \process@envbody % A little tricky! Note the grouping
+}
+
+% expand \process@envbody, #1 = "f = \begin{matrix} x ", #2 = "matrix"
+%  - if #1 contains \begin{...}, \begin@stack is nonempty, continue collecting, 
+%     (local) \process@envbody is equal to \collect@@body
+%  - otherwise, \begin@stack is empty, end the group, end the collection, 
+%     \process@envbody -> "\@xp\next@\@xp{\the\@envbody}\end{multline*}"
+\double@dollar
+\begingroup
+\edef\begin@stack{\push@begins f = \begin{matrix} x \begin\end \@xp\@gobble\begin@stack}%
+\ifx\@empty\begin@stack
+  \endgroup
+  \@checkend{matrix}%
+  \addto@envbody{f = \begin{matrix} x }%
+\else
+  \addto@envbody{f = \begin{matrix} x \end{matrix}}%
+\fi
+\process@envbody % A little tricky! Note the grouping
+\end{multline*}
