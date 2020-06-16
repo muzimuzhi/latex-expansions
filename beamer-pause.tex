@@ -1,0 +1,229 @@
+first \pause second
+
+
+\newrobustcmd{\beamer@@pause}[1][]{%
+  \ifblank{#1}%
+    {\stepcounter{beamerpauses}}%
+    {\setcounter{beamerpauses}{#1}}%
+  \onslide<\value{beamerpauses}->\relax%
+}
+
+% expand \pause, #1 = ""
+% expand \ifblank, true
+\stepcounter{beamerpauses}
+\onslide<\value{beamerpauses}->\relax
+
+
+\newrobustcmd*\onslide{%
+  \@ifstar
+    {\only}
+    {\@ifnextchar+%
+      {\expandafter\beamer@visibleonslide\@gobble}
+      {\beamer@mainonslide}}}
+
+% expand \onslide
+% expand \@ifstar, false
+% expand \@ifnextchar, false
+\beamer@mainonslide<\value{beamerpauses}->\relax
+
+
+\newcommand<>{\beamer@mainonslide}{%
+  \@ifnextchar\bgroup%
+  {\uncover#1}%
+  {\beamer@noargsonslide#1}%
+}
+
+% expand \beamer@mainonslide, #1 = "<\value{beamerpauses}>"
+% expand \@ifnextchar, false
+\beamer@noargsonslide<\value{beamerpauses}->\relax
+
+
+\newcommand<>{\beamer@noargsonslide}{%
+  \beamer@endpause%
+  \alt#1%
+  {\beamer@spacingcover\gdef\beamer@endpause{\beamer@spacingcover}}%
+  {\beamer@startcovered\gdef\beamer@endpause{\beamer@endcovered}}%
+}
+
+% expand \beamer@noargsonslide, #1 = "<\value{beamerpauses}>"
+% expand \beamer@endpause, empty
+\alt<\value{beamerpauses}->
+  {\beamer@spacingcover\gdef\beamer@endpause{\beamer@spacingcover}}%
+  {\beamer@startcovered\gdef\beamer@endpause{\beamer@endcovered}}%
+  \relax
+
+
+\newrobustcmd*\alt{\@ifnextchar<{\beamer@alt}{\beamer@alttwo}}
+
+% expand \alt
+% expand \@ifnextchar, true
+\beamer@alt<\value{beamerpauses}->
+  {\beamer@spacingcover\gdef\beamer@endpause{\beamer@spacingcover}}%
+  {\beamer@startcovered\gdef\beamer@endpause{\beamer@endcovered}}%
+  \relax
+
+
+\long\def\beamer@alt<#1>#2#3{%
+  \gdef\beamer@doifnotinframe{#3}\def\beamer@doifinframe{#2}%
+  \beamer@masterdecode{#1}\beamer@donow}
+
+% expand \beamer@alt, #1 = "\value{beamerpauses}", 
+%   #2 = "\beamer@spacingcover ...", #3 = "\beamer@startcovered ..."
+\gdef\beamer@doifnotinframe
+  {\beamer@startcovered\gdef\beamer@endpause{\beamer@endcovered}}%
+\def\beamer@doifinframe
+  {\beamer@spacingcover\gdef\beamer@endpause{\beamer@spacingcover}}%
+\beamer@masterdecode{\value{beamerpauses}-}\beamer@donow
+
+
+\begingroup
+  \catcode`\|=\active
+  \catcode`\:=\active
+  \catcode`\,=\active
+  \catcode`\.=\active
+  \catcode`\+=\active
+  \catcode`\-=\active
+  \catcode`\(=\active
+  \catcode`\)=\active
+  \catcode`\ =\active
+\xdef\beamer@masterdecode#1{%
+\noexpand\beamer@localanotherslidefalse%
+\setbox\beamer@decode@box=\hbox{%
+\unexpanded{%
+\ifnum\catcode`\|=\active\edef|{\string|}\fi%
+\ifnum\catcode`\:=\active\edef:{\string:}\fi%
+\ifnum\catcode`\,=\active\edef,{\string,}\fi%
+\ifnum\catcode`\.=\active\edef.{\string.}\fi%
+\ifnum\catcode`\+=\active\edef+{\string+}\fi%
+\ifnum\catcode`\-=\active\edef-{\string-}\fi%
+\ifnum\catcode`\(=\active\edef({\string(}\fi%
+\ifnum\catcode`\)=\active\edef){\string)}\fi%
+\ifnum\catcode`\ =\active\edef {\string }\fi}%
+\edef\noexpand\beamer@@@temp{#1\string|stop\string:0\string|}%
+\edef\noexpand\beamer@@@temp{\unexpanded{\expandafter\zap@space\beamer@@@temp}%
+\space\noexpand\@empty}%
+\unexpanded{\expandafter\beamer@decode\beamer@@@temp%
+\ifbeamer@localanotherslide\aftergroup\beamer@localanotherslidetrue\fi}%
+}%
+}%
+\endgroup
+
+% expand \beamer@masterdecode
+\beamer@@@temp -> "\c@beamerpauses-|stop:0|"
+\beamer@decode\c@beamerpauses-|stop:0|%
+\ifbeamer@localanotherslide\aftergroup\beamer@localanotherslidetrue\fi
+\beamer@donow
+
+
+\def\beamer@decode{%
+  \beamer@plusencounteredfalse
+  \global\beamer@minimum=10000\relax
+  \gdef\beamer@decaction{}%
+  \global\let\beamer@decodefound=\beamer@allsign
+  \beamer@@decodefind}
+
+% expand \beamer@decode
+% expand \beamer@masterdecode
+\beamer@minimum -> "10000"
+\beamer@decaction -> ""
+\beamer@decodefound -> "*"
+\beamer@@decodefind\c@beamerpauses-|stop:0|%
+\ifbeamer@localanotherslide\aftergroup\beamer@localanotherslidetrue\fi
+\beamer@donow
+
+
+\def\beamer@@decodefind#1|{\beamer@@@decodefind#1:|}
+
+% expand \beamer@@decodefind, #1 = "\c@beamerpauses-"
+\beamer@@@decodefind\c@beamerpauses-:|stop:0|%
+\ifbeamer@localanotherslide\aftergroup\beamer@localanotherslidetrue\fi
+\beamer@donow
+
+
+\def\beamer@@@decodefind#1:#2|{%
+  \ifblank{#2}%
+    {\beamer@decodefind beamer:#1:}%
+    {\beamer@decodefind #1:#2}}
+
+% expand \beamer@@@decodefind, #1 = "\c@beamerpauses-", #2 = ""
+% expand \ifblank, true
+\beamer@decodefind beamer:\c@beamerpauses-:stop:0|%
+\ifbeamer@localanotherslide\aftergroup\beamer@localanotherslidetrue\fi
+\beamer@donow
+
+
+
+\def\beamer@decodefind#1:#2:{...}
+
+% expand \beamer@decodefind, #1 = "beamer", #2 = "\c@beamerpauses-"
+<replacement text of \beamer@decodefind>stop:0|%
+\ifbeamer@localanotherslide\aftergroup\beamer@localanotherslidetrue\fi
+\beamer@donow
+
+
+\beamer@@decode\c@beamerpauses-,!
+
+
+\def\beamer@@decode{%
+  \kernel@ifnextchar!%
+  {\beamer@decodeend}%
+  {%
+    \kernel@ifnextchar*%
+    {\beamer@decodeall}{%
+      \kernel@ifnextchar-%
+      {\beamer@decodeuntil}%
+      {\beamer@decodenumber}}}}
+
+% expand \beamer@@decode
+\beamer@decodenumber\c@beamerpauses-,!
+
+
+\def\beamer@decodenumber#1{%
+  \kernel@ifnextchar,%
+  {\beamer@decodeone{#1}}%
+  {\kernel@ifnextchar-%
+    {\beamer@decodenumberto{#1}}%
+    {\beamer@decodegobble{#1}}}}
+
+% expand \beamer@decodenumber, #1 = "\c@beamerpauses"
+\beamer@decodenumberto{\c@beamerpauses}-,!
+
+\def\beamer@decodenumberto#1-{%
+  \kernel@ifnextchar,%
+  {\beamer@decodeto{#1}}%
+  {\beamer@decodebetween{#1}}}
+
+% expand \beamer@decodenumbertp, #1 = "\c@beamerpauses"
+\beamer@decodeto{\c@beamerpauses},!
+
+
+\def\beamer@decodeto#1,{%
+  \ifnum#1<\beamer@minimum
+    \global\beamer@minimum=#1\relax
+  \fi
+  \ifnum#1>\beamer@slideinframe
+    \global\beamer@anotherslidetrue\beamer@localanotherslidetrue
+  \fi
+  \ifnum#1>\beamer@slideinframe
+  \else
+    \gdef\beamer@doifnotinframe{\beamer@doifinframe}%
+  \fi
+  \beamer@@decode}
+
+% expand \beamer@decodeto, #1 = "\c@beamerpauses"
+\beamer@minimum -> 2
+
+
+% in beamerbasedecode.sty
+\def\beamer@donow{\beamer@doifnotinframe}
+% in \beamer@alt
+\gdef\beamer@doifnotinframe
+  {\beamer@startcovered\gdef\beamer@endpause{\beamer@endcovered}}%
+
+% expand \beamer@donow
+% expand \beamer@doifnotinframe
+\beamer@startcovered
+\gdef\beamer@endpause{\beamer@endcovered}
+
+
+\pgfsys@begininvisible
