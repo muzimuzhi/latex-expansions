@@ -1,0 +1,63 @@
+\cref{key}
+
+
+
+\@@@setcref{\cref@section@format}{key}
+
+
+\def\@@@setcref#1#2{%
+  \cref@getlabel{#2}{\@templabel}%
+  \if@crefstarred%
+    #1{\@templabel}{}{}%
+  \else%
+    \edef\@tempname{\cref@hyperlinkname{#2}}%
+    \edef\@tempurl{\cref@hyperlinkurl{#2}}%
+    #1{\@templabel}{\cref@hyperlink{\@tempurl}{\@tempname}}{\@nil}%
+  \fi}%
+
+% expand \@@@setcref, #1 = "\cref@section@format", #2 = "key"
+\cref@getlabel{key}{\@templabel}
+\if@crefstarred%
+  \cref@section@format{\@templabel}{}{}%
+\else%
+  \edef\@tempname{\cref@hyperlinkname{key}}%
+  \edef\@tempurl{\cref@hyperlinkurl{key}}%
+  \cref@section@format{\@templabel}{\cref@hyperlink{\@tempurl}{\@tempname}}{\@nil}%
+\fi
+
+
+% expand \cref@getlabel
+def \@templabel = "1"
+\cref@section@format{\@templabel}{}{}
+\if@crefstarred% false
+  \cref@section@format{\@templabel}{}{}%
+\else%
+  \edef\@tempname{\cref@hyperlinkname{key}}%
+  \edef\@tempurl{\cref@hyperlinkurl{key}}%
+  \cref@section@format{\@templabel}{\cref@hyperlink{\@tempurl}{\@tempname}}{\@nil}%
+\fi
+
+
+% expand \edef, expand \cref@hyperlinkname
+% expand \edef, expand \cref@hyperlinkurl
+def \@tempname -> "section.1"
+def \@tempurl -> ""
+\cref@section@format{\@templabel}{\cref@hyperlink{\@tempurl}{\@tempname}}{\@nil}
+
+
+% defined in \AtBeginDocument
+\cref@section@format = macro:#1#2#3->\cref@section@name \nobreakspace #2#1#3
+
+% expand \cref@section@format
+\cref@section@name\nobreakspace
+\cref@hyperlink{\@tempurl}{\@tempname}\@templabel\@nil
+
+
+% expand \cref@section@name
+section~
+\cref@hyperlink{\@tempurl}{\@tempname}\@templabel\@nil
+
+\def\cref@hyperlink#1#2#3\@nil{\hyper@@link[link]{#1}{#2}{#3}}%
+
+% expand \cref@hyperlink
+\hyper@@link[link]{\@tempurl}{\@tempname}{\@templabel}
