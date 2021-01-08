@@ -1,0 +1,719 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{unravel}
+\unravelsetup{max-action=1000, max-input=1000}
+
+\makeatletter
+\let\tikz@ensure@dollar@catcode\relax
+\makeatother
+
+\begin{document}
+\catcode`$=12
+\unravel{%
+  \begin{tikzpicture}
+    \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+  \end{tikzpicture}
+}
+\end{document}
+
+
+expand \begin, #1 = "tikzpicture"
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\tikzpicture
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+% tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+\def\tikzpicture{%
+  \begingroup%
+    \tikz@startup@env%
+    \tikz@collect@scope@anims\tikz@picture}%
+
+expand \tikzpicture
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+  \tikz@startup@env%
+  \tikz@collect@scope@anims\tikz@picture
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+\def\tikz@startup@env{%
+  \ifnum\the\catcode`\;=\active\relax\expandafter\let\expandafter\tikz@origsemi\expandafter=\tikz@activesemicolon\fi%
+  \ifnum\the\catcode`\:=\active\relax\expandafter\let\expandafter\tikz@origcolon\expandafter=\tikz@activecolon\fi%
+  \ifnum\the\catcode`\|=\active\relax\expandafter\let\expandafter\tikz@origbar\expandafter=\tikz@activebar\fi%
+  \tikz@deactivatthings%
+  \iftikz@handle@active@code%
+    \tikz@switchoff@shorthands%
+  \fi%
+}%
+
+expand \tikz@startup@env
+expand three \ifnum: false, false, false
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+  \tikz@deactivatthings%
+  \iftikz@handle@active@code%
+    \tikz@switchoff@shorthands%
+  \fi%
+  \tikz@collect@scope@anims\tikz@picture
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+{%
+  \catcode`\;=12
+  \gdef\tikz@nonactivesemicolon{;}%
+  \catcode`\:=12
+  \gdef\tikz@nonactivecolon{:}%
+  \catcode`\|=12
+  \gdef\tikz@nonactivebar{|}%
+  \catcode`\!=12
+  \gdef\tikz@nonactiveexlmark{!}%
+  \catcode`\;=\active
+  \catcode`\:=\active
+  \catcode`\|=\active
+  \catcode`\"=\active
+  \catcode`\!=\active
+  \gdef\tikz@activesemicolon{;}%
+  \gdef\tikz@activecolon{:}%
+  \gdef\tikz@activebar{|}%
+  \gdef\tikz@activequotes{"}%
+  \global\let\tikz@active@quotes@token="%
+  \gdef\tikz@activeexlmark{!}%
+  \gdef\tikz@deactivatthings{%
+    \def;{\tikz@nonactivesemicolon}%
+    \def:{\tikz@nonactivecolon}%
+    \def|{\tikz@nonactivebar}%
+    \def!{\tikz@nonactiveexlmark}%
+  }%
+}%
+
+expand \tikz@deactivatthings
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+  \def;{\tikz@nonactivesemicolon}%
+  \def:{\tikz@nonactivecolon}%
+  \def|{\tikz@nonactivebar}%
+  \def!{\tikz@nonactiveexlmark}%
+  \iftikz@handle@active@code%
+    \tikz@switchoff@shorthands%
+  \fi%
+  \tikz@collect@scope@anims\tikz@picture
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+expand \iftikz@handle@active@code: false
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+  \tikz@collect@scope@anims\tikz@picture
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+\def\tikz@collect@scope@anims#1{%
+  \pgfutil@ifnextchar[#1{#1[]}%]
+}%
+
+expand \tikz@collect@scope@anims, #1 = "\tikz@picture"
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+  \pgfutil@ifnextchar[\tikz@picture{\tikz@picture[]}
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+% tex/generic/pgf/utilities/pgfutil-common.tex
+\long\def\pgfutil@ifnextchar#1#2#3{%
+  \let\pgfutil@reserved@d=#1%
+  \def\pgfutil@reserved@a{#2}%
+  \def\pgfutil@reserved@b{#3}%
+  \futurelet\pgfutil@let@token\pgfutil@ifnch}
+
+expand \pgfutil@ifnextchar, #1 = "[", #2 = "\tikz@picture", #2 = "\tikz@picture[]"
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+  \tikz@picture[]
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+\def\tikz@picture[#1]{%
+  %\tikz@check@inside@picture%
+  \pgfpicture%
+  \let\tikz@atbegin@picture=\pgfutil@empty%
+  \let\tikz@atend@picture=\pgfutil@empty%
+  \let\tikz@transform=\relax%
+  \def\tikz@time{.5}%
+  \tikz@installcommands%
+  \scope[every picture,#1]%
+  \iftikz@handle@active@code%
+    \tikz@switchoff@shorthands%
+  \fi%
+  \expandafter\tikz@atbegin@picture%
+  \tikz@lib@scope@check%
+}%
+
+expand \tikz@picture, #1 = ""
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+  \pgfpicture%
+  \let\tikz@atbegin@picture=\pgfutil@empty%
+  \let\tikz@atend@picture=\pgfutil@empty%
+  \let\tikz@transform=\relax%
+  \def\tikz@time{.5}%
+  \tikz@installcommands%
+  \scope[every picture,]%
+  \iftikz@handle@active@code%
+    \tikz@switchoff@shorthands%
+  \fi%
+  \expandafter\tikz@atbegin@picture%
+  \tikz@lib@scope@check%
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+% tex/generic/pgf/basiclayer/pgfcorescopes.code.tex
+\def\pgfpicture{%
+  \begingroup%
+    \pgfpicturetrue%
+    \global\advance\pgf@picture@serial@count by1\relax%
+    \edef\pgfpictureid{pgfid\the\pgf@picture@serial@count}%
+    \let\pgf@nodecallback=\pgfutil@gobble%
+    \pgf@picmaxx=-16000pt\relax%
+    \pgf@picminx=16000pt\relax%
+    \pgf@picmaxy=-16000pt\relax%
+    \pgf@picminy=16000pt\relax%
+    \pgf@relevantforpicturesizetrue%
+    \pgf@resetpathsizes%
+    \pgfutil@ifnextchar\bgroup\pgf@oldpicture\pgf@picture}
+
+expand \pgfpicture
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+\begingroup%
+  \pgfpicturetrue%
+  \global\advance\pgf@picture@serial@count by1\relax%
+  \edef\pgfpictureid{pgfid\the\pgf@picture@serial@count}%
+  \let\pgf@nodecallback=\pgfutil@gobble%
+  \pgf@picmaxx=-16000pt\relax%
+  \pgf@picminx=16000pt\relax%
+  \pgf@picmaxy=-16000pt\relax%
+  \pgf@picminy=16000pt\relax%
+  \pgf@relevantforpicturesizetrue%
+  \pgf@resetpathsizes%
+  \pgfutil@ifnextchar\bgroup\pgf@oldpicture\pgf@picture
+  \let\tikz@atbegin@picture=\pgfutil@empty%
+  \let\tikz@atend@picture=\pgfutil@empty%
+  \let\tikz@transform=\relax%
+  \def\tikz@time{.5}%
+  \tikz@installcommands%
+  \scope[every picture,]%
+  \iftikz@handle@active@code%
+    \tikz@switchoff@shorthands%
+  \fi%
+  \expandafter\tikz@atbegin@picture%
+  \tikz@lib@scope@check%
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+expand \pgfpicturetrue
+expand \advance, \edef, ..., \pgf@relevantforpicturesizetrue
+
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+\begingroup%
+  \pgf@resetpathsizes%
+  \pgfutil@ifnextchar\bgroup\pgf@oldpicture\pgf@picture
+  \let\tikz@atbegin@picture=\pgfutil@empty%
+  \let\tikz@atend@picture=\pgfutil@empty%
+  \let\tikz@transform=\relax%
+  \def\tikz@time{.5}%
+  \tikz@installcommands%
+  \scope[every picture,]%
+  \iftikz@handle@active@code%
+    \tikz@switchoff@shorthands%
+  \fi%
+  \expandafter\tikz@atbegin@picture%
+  \tikz@lib@scope@check%
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+% tex/generic/pgf/basiclayer/pgfcorepathconstruct.code.tex
+\def\pgf@resetpathsizes{%
+  \global\pgf@pathmaxx=-16000pt\relax%
+  \global\pgf@pathminx=16000pt\relax%
+  \global\pgf@pathmaxy=-16000pt\relax%
+  \global\pgf@pathminy=16000pt\relax%
+}
+
+expand \pgf@resetpathsizes
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+\begingroup%
+  \pgfutil@ifnextchar\bgroup\pgf@oldpicture\pgf@picture
+  \let\tikz@atbegin@picture=\pgfutil@empty%
+  \let\tikz@atend@picture=\pgfutil@empty%
+  \let\tikz@transform=\relax%
+  \def\tikz@time{.5}%
+  \tikz@installcommands%
+  \scope[every picture,]%
+  \iftikz@handle@active@code%
+    \tikz@switchoff@shorthands%
+  \fi%
+  \expandafter\tikz@atbegin@picture%
+  \tikz@lib@scope@check%
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+expand \pgfutil@ifnextchar
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+\begingroup%
+  \pgf@picture
+  \let\tikz@atbegin@picture=\pgfutil@empty%
+  \let\tikz@atend@picture=\pgfutil@empty%
+  \let\tikz@transform=\relax%
+  \def\tikz@time{.5}%
+  \tikz@installcommands%
+  \scope[every picture,]%
+  \iftikz@handle@active@code%
+    \tikz@switchoff@shorthands%
+  \fi%
+  \expandafter\tikz@atbegin@picture%
+  \tikz@lib@scope@check%
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+\def\pgf@picture{%
+  \setbox\pgfpic\hbox to0pt\bgroup%
+    \begingroup%
+    \pgfsys@beginpicture%
+      \pgfsys@beginscope%
+        \begingroup%
+        \pgfsetcolor{.}%
+        \pgfsetlinewidth{0.4pt}%
+        \pgftransformreset%
+        \pgfsyssoftpath@setcurrentpath\pgfutil@empty%
+        \begingroup%
+          \let\pgf@setlengthorig=\setlength%
+          \let\pgf@addtolengthorig=\addtolength%
+          \let\pgf@selectfontorig=\selectfont%
+          \let\setlength=\pgf@setlength%
+          \let\addtolength=\pgf@addtolength%
+          \let\selectfont=\pgf@selectfont%
+          \nullfont\spaceskip0pt\xspaceskip0pt%
+          \setbox\pgf@layerbox@main\hbox to0pt\bgroup%
+            \begingroup%
+  }
+
+% step 249
+expand \pgf@picture
+
+\def\@currenvir{tikzpicture}
+\begingroup
+\begingroup%
+\begingroup%
+  \setbox\pgfpic\hbox to0pt\bgroup%
+    \begingroup%
+    \pgfsys@beginpicture%  empty
+      \pgfsys@beginscope%  \pgfsysprotocol@literal{q}
+        \begingroup%
+        \pgfsetcolor{.}%
+        \pgfsetlinewidth{0.4pt}%
+        \pgftransformreset%
+        \pgfsyssoftpath@setcurrentpath\pgfutil@empty%
+        \begingroup%
+          \let\pgf@setlengthorig=\setlength%
+          \let\pgf@addtolengthorig=\addtolength%
+          \let\pgf@selectfontorig=\selectfont%
+          \let\setlength=\pgf@setlength%
+          \let\addtolength=\pgf@addtolength%
+          \let\selectfont=\pgf@selectfont%
+          \nullfont\spaceskip0pt\xspaceskip0pt%
+          \setbox\pgf@layerbox@main\hbox to0pt\bgroup%
+            \begingroup%
+  \let\tikz@atbegin@picture=\pgfutil@empty%
+  \let\tikz@atend@picture=\pgfutil@empty%
+  \let\tikz@transform=\relax%
+  \def\tikz@time{.5}%
+  \tikz@installcommands%
+  \scope[every picture,]%
+  \iftikz@handle@active@code%
+    \tikz@switchoff@shorthands%
+  \fi%
+  \expandafter\tikz@atbegin@picture%
+  \tikz@lib@scope@check%
+  \path[draw] ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end{tikzpicture}
+
+
+
+
+%TODO
+
+% step 3697
+\tikzset {every path/.try}%
+\tikz@scan@next@command [draw]($ (0, 0) + (0, 0) $) -- (1, 0); \end {tikzpicture} 
+
+% step 4242
+\tikz@scan@next@command ($ (0, 0) + (0, 0) $) -- (1, 0);
+\end {tikzpicture}
+
+
+\def\tikz@scan@next@command{%
+  \ifx\tikz@collected@onpath\pgfutil@empty% 
+  \else%
+    \tikz@invoke@collected@onpath%
+  \fi%
+  \afterassignment\tikz@handle\let\pgf@let@token=%
+}%
+
+expand \tikz@scan@next@command
+
+\ifx\tikz@collected@onpath\pgfutil@empty%  true
+\else%
+  \tikz@invoke@collected@onpath%
+\fi%
+\afterassignment\tikz@handle\let\pgf@let@token=%
+($ (0, 0) + (0, 0) $) -- (1, 0);
+\end {tikzpicture}
+
+
+expand \ifx
+
+\afterassignment\tikz@handle\let\pgf@let@token=%
+($ (0, 0) + (0, 0) $) -- (1, 0);
+\end {tikzpicture}
+
+
+expand \afterassignment
+expand \let
+
+\let\pgf@let@token=%
+\tikz@handle
+($ (0, 0) + (0, 0) $) -- (1, 0);
+\end {tikzpicture}
+
+
+\def\tikz@handle{%
+  \let\pgfutil@next=\tikz@expand%
+  \ifx\pgf@let@token(%)  true
+    \let\pgfutil@next=\tikz@movetoabs%  \tikz@moveto(
+  \else%
+    \ifx\pgf@let@token+%
+      \let\pgfutil@next=\tikz@movetorel%
+    \else%
+      \ifx\pgf@let@token-%
+        \let\pgfutil@next=\tikz@lineto%
+      \else%
+        \ifx\pgf@let@token.%
+          \let\pgfutil@next=\tikz@dot%
+        \else%
+          \ifx\pgf@let@token r%
+            \let\pgfutil@next=\tikz@rect%
+          \else%
+            \ifx\pgf@let@token n%
+              \let\pgfutil@next=\tikz@fig%
+            \else%
+              \ifx\pgf@let@token[%]
+                \let\pgfutil@next=\tikz@parse@options%
+              \else%
+                \ifx\pgf@let@token c%
+                  \let\pgfutil@next=\tikz@cchar%
+                \else%
+                  \ifx\pgf@let@token\bgroup%
+                    \let\pgfutil@next=\tikz@beginscope%
+                  \else%
+                    \ifx\pgf@let@token\egroup%
+                      \let\pgfutil@next=\tikz@endscope%
+                    \else%
+                      \ifx\pgf@let@token;%
+                        \let\pgfutil@next=\tikz@finish%
+                      \else%
+                        \let\pgfutil@next=\tikz@handle@more%
+                      \fi%
+                    \fi%
+                  \fi%
+                \fi%
+              \fi%
+            \fi%
+          \fi%
+        \fi%
+      \fi%
+    \fi%
+  \fi%
+  \pgfutil@next%
+}%
+
+expand \tikz@handle
+expand \let
+expand \ifx: true
+
+\let\pgf@let@token=%
+\let\pgfutil@next=\tikz@expand
+\let\pgfutil@next=\tikz@movetoabs
+\pgfutil@next% 
+\tikz@handle
+($ (0, 0) + (0, 0) $) -- (1, 0);
+\end {tikzpicture}
+
+
+\def\tikz@movetoabs{\tikz@moveto(}%
+
+expand \pgfutil@next
+
+\let\pgf@let@token=%
+\tikz@moveto(
+\tikz@handle
+($ (0, 0) + (0, 0) $) -- (1, 0);
+\end {tikzpicture}
+
+
+\def\tikz@moveto{%
+  \tikz@scan@one@point{\tikz@@moveto}}%
+
+expand \tikz@moveto
+
+\let\pgf@let@token=%
+\tikz@scan@one@point{\tikz@@moveto}(
+\tikz@handle
+($ (0, 0) + (0, 0) $) -- (1, 0);
+\end {tikzpicture}
+
+
+\def\tikz@scan@one@point#1{%
+  \let\tikz@to@use@whom=\tikz@to@use@last@coordinate%
+  \tikz@shapeborderfalse%
+  \pgfutil@ifnextchar+{\tikz@scan@relative#1}{\tikz@scan@absolute#1}}%
+
+expand \tikz@scan@one@point, #1 = "\tikz@@moveto"
+
+\let\tikz@to@use@whom=\tikz@to@use@last@coordinate%
+\tikz@shapeborderfalse%
+\pgfutil@ifnextchar+{\tikz@scan@relative\tikz@@moveto}{\tikz@scan@absolute\tikz@@moveto}
+(
+\tikz@handle
+($ (0, 0) + (0, 0) $) -- (1, 0);
+\end {tikzpicture}
+
+
+% steo 4286
+expand \pgfutil@ifnextchar
+
+\let\tikz@to@use@whom=\tikz@to@use@last@coordinate%
+\tikz@shapeborderfalse%
+\tikz@scan@absolute\tikz@@moveto
+(
+\tikz@handle
+($ (0, 0) + (0, 0) $) -- (1, 0);
+\end {tikzpicture}
+
+
+% step 4305
+\tikz@scan@@absolute \tikz@@moveto 
+($ (0, 0) + (0, 0) $) -- (1, 0); 
+\end{tikzpicture} 
+
+
+% tikz.code.tex
+\def\tikz@scan@@absolute#1({%
+  \pgfutil@ifnextchar[% uhoh... options!
+  {\def\tikz@scan@point@recall{#1}\tikz@scan@options}%
+  {\tikz@@@scan@@absolute#1(}%
+}%
+
+expand \tikz@scan@@absolute, #1 = "\tikz@@moveto"
+expand \pgfutil@ifnextchar
+
+\tikz@@@scan@@absolute\tikz@@moveto(%
+$ (0, 0) + (0, 0) $) -- (1, 0); 
+\end{tikzpicture} 
+
+
+% tikz.code.tex
+\def\tikz@@@scan@@absolute#1({%
+  \tikz@ensure@dollar@catcode%  let to \relax in mwe
+  \pgfutil@ifnextchar{$}%$
+  {\tikz@parse@calculator#1(}
+  {\tikz@scan@no@calculator#1(}%
+}%
+
+$
+expand \tikz@scan@@absolute, #1 = "\tikz@@moveto"
+expand \tikz@ensure@dollar@catcode
+expand \pgfutil@ifnextchar
+
+\tikz@scan@no@calculator\tikz@@moveto(%
+$ (0, 0) + (0, 0) $) -- (1, 0); 
+\end{tikzpicture} 
+
+
+\def\tikz@scan@no@calculator#1(#2){%
+  \edef\tikz@scan@point@coordinate{(#2)}%
+  \expandafter\tikz@@scan@@no@calculator\expandafter#1\tikz@scan@point@coordinate%
+}%
+
+expand \tikz@scan@no@calculator, #1 = "\tikz@@moveto", #2 = "$ (0, 0"
+$
+
+\edef\tikz@scan@point@coordinate{($ (0, 0)}%
+\expandafter\tikz@@scan@@no@calculator
+\expandafter\tikz@@moveto
+\tikz@scan@point@coordinate%
+ + (0, 0) $) -- (1, 0); 
+\end{tikzpicture}
+
+
+expand \edef
+expand \tikz@scan@point@coordinate
+
+\tikz@@scan@@no@calculator
+\tikz@@moveto
+($ (0, 0) + (0, 0) $) -- (1, 0); 
+\end{tikzpicture}
+
+
+\def\tikz@@scan@@no@calculator#1(#2){%
+  \pgfutil@in@{cs:}{#2}%
+  \ifpgfutil@in@%  false
+    \let\pgfutil@next\tikz@parse@coordinatesystem%
+  \else%
+    \pgfutil@in@{intersection }{#2}%
+    \ifpgfutil@in@%  false
+      \let\pgfutil@next\tikz@parse@intersection%
+    \else%
+      \pgfutil@in@|{#2}%  false
+      \ifpgfutil@in@
+        \pgfutil@in@{-|}{#2}%
+        \ifpgfutil@in@
+          \let\pgfutil@next\tikz@parse@hv%
+        \else%
+          \let\pgfutil@next\tikz@parse@vh%
+        \fi%
+      \else%
+        \pgfutil@in@:{#2}%  false
+        \ifpgfutil@in@
+          \let\pgfutil@next\tikz@parse@polar%
+        \else%
+          \pgfutil@in@,{#2}%  true
+          \ifpgfutil@in@%
+            \let\pgfutil@next\tikz@parse@regular%
+          \else%
+            \let\pgfutil@next\tikz@parse@node%
+          \fi%
+        \fi%
+      \fi%
+    \fi%
+  \fi%
+  \pgfutil@next#1(#2)%
+}%
+
+% step 4355
+expand \tikz@@scan@@no@calculator， #1 = "\tikz@@moveto"， #2 = "$ (0, 0"
+$ 
+execute \let\pgfutil@next\tikz@parse@regular%
+
+\tikz@parse@regular\tikz@@moveto
+($ (0, 0) + (0, 0) $) -- (1, 0); 
+\end{tikzpicture} 
+
+
+\def\tikz@parse@regular#1(#2,{%
+    \pgfutil@ifnextchar\bgroup{\tikz@@parse@regular#1{#2}}{\tikz@@@parse@regular#1{#2}}%
+}%
+
+expand \tikz@parse@regular, #1 = "\tikz@@moveto", #2 = "$ (0"
+$
+
+\pgfutil@ifnextchar\bgroup
+  {\tikz@@parse@regular\tikz@@moveto{$ (0}}
+  {\tikz@@@parse@regular\tikz@@moveto{$ (0}}% 
+ 0) + (0, 0) $) -- (1, 0); 
+\end{tikzpicture} 
+
+
+expand \pgfutil@ifnextchar
+
+\tikz@@@parse@regular\tikz@@moveto{$ (0}%
+ 0) + (0, 0) $) -- (1, 0); 
+\end{tikzpicture} 
+
+
+% Originally \def\tikz@parse@regular#1(#2,#3){%
+%
+\def\tikz@@@parse@regular#1#2#3){%
+  \pgfutil@in@,{#3}%
+  \ifpgfutil@in@%
+    \tikz@parse@splitxyz{#1}{#2}#3,%
+  \else%
+    \tikz@checkunit{#2}%
+    \iftikz@isdimension%
+      \tikz@checkunit{#3}%
+      \iftikz@isdimension%
+        \def\pgfutil@next{#1{\pgfpoint{#2}{#3}}}%
+      \else%
+        \def\pgfutil@next{#1{\pgfpointadd{\pgfpoint{#2}{0pt}}{\pgfpointxy{0}{#3}}}}%
+      \fi%
+    \else%
+      \tikz@checkunit{#3}%
+      \iftikz@isdimension%
+        \def\pgfutil@next{#1{\pgfpointadd{\pgfpoint{0pt}{#3}}{\pgfpointxy{#2}{0}}}}%
+      \else%
+        \def\pgfutil@next{#1{\pgfpointxy{#2}{#3}}}%
+      \fi%
+    \fi%
+  \fi%
+  \pgfutil@next%
+}%
+
+expand \tikz@@parse@regular
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
