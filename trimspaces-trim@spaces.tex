@@ -1,0 +1,92 @@
+\documentclass{article}
+%\usepackage{trimspaces}
+
+\usepackage{unravel}
+\unravelsetup{max-action=1000, max-input=1000, max-output=200}
+\long\def\beginunravel#1\endunravel{\unravel{#1}}
+\def\endunravel{}
+
+\makeatletter
+\catcode`\Q=3
+\newcommand\trim@spaces[1]{%
+  \romannumeral-`\q\trim@trim@\noexpand#1Q Q%
+}
+\long\def\trim@trim@#1 Q{\trim@trim@@#1Q}
+\long\def\trim@trim@@#1Q#2{#1}
+\catcode`\Q=11
+\makeatother
+
+
+\begin{document}
+\ttfamily
+
+\makeatletter
+\leavevmode
+\beginunravel
+%\tracingall
+\trim@spaces{ a }
+%\tracingnone
+\endunravel
+\makeatother
+\end{document}
+
+%% start
+\trim@spaces{␣a␣}
+
+\newcommand\trim@spaces[1]{%
+  \romannumeral-`\q\trim@trim@\noexpand#1Q Q%
+}
+% expand \trim@spaces, #1 = "␣a␣"
+\romannumeral-`\q\trim@trim@\noexpand␣a␣Q Q%
+
+% expand \romannumeral and `\q
+\romannumeral-113\trim@trim@@\noexpand␣a␣Q Q
+
+\long\def\trim@trim@#1 Q{\trim@trim@@#1Q}
+% expand \trim@trim@, #1 = "\noexpand␣a" (delimiter "␣Q" dropped)
+\romannumeral-113\trim@trim@@\noexpand␣aQ Q
+
+\long\def\trim@trim@@#1Q#2{#1}
+% expand \trim@trim@@, #1 = "\noexpand␣a" (delimiter "Q" dropped), #2 = "Q"
+% (#2 is undelimited, thus the space right before it is skipped)
+\romannumeral-113\noexpand␣a
+
+% expand \noexpand
+\romannumeral-113␣a
+
+% "\romannumearl-113␣a" expands to "a"
+%
+% The space right before "a" is served as a delimiter of number hence skipped.
+% This is similar to "\the\count0 a".
+% See the grammar of "<integer denotation>" in "texdoc texbytopic",
+% sec. 7.2.7 Trailing spaces.
+a
+%% done
+
+%% start
+\trim@spaces{a}
+
+\newcommand\trim@spaces[1]{%
+  \romannumeral-`\q\trim@trim@\noexpand#1Q Q%
+}
+% expand \trim@spaces, #1 = "a"
+\romannumeral-`\q\trim@trim@\noexpand aQ Q%
+
+% expand \romannumeral and `\q
+\romannumeral-113\trim@trim@@\noexpand aQ Q
+
+\long\def\trim@trim@#1 Q{\trim@trim@@#1Q}
+% expand \trim@trim@, #1 = "\noexpand aQ" (delimiter " Q" dropped)
+\romannumeral-113\trim@trim@@\noexpand aQ
+
+% expand \trim@trim@@, #1 = "\noexpand a", #2 = "Q"
+\romannumeral-113\noexpand a
+
+% expand \noexpand
+% "\romannumearl-113a" expands to "a"
+%
+% If "a" is expandable, "\noexpand a" expands to a temp, internal unexpandable
+% token "\notexpanded:a".
+% See "texdoc interface3", sec. 24.7 Description of all possible tokens.
+a
+%% done
