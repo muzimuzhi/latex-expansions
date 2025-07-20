@@ -1,0 +1,240 @@
+% implementation v2, check out
+%     dc98b75d (\tl_trim_spaces:n trimming recursively, only explicit spaces., 2011-08-13)
+%     https://github.com/latex3/latex3/commit/dc98b75d4d070608aaf387a4abd543e0ad8dc0cd
+% implementation v3, check out
+%     0fdf1714 (speed up trim spaces (#1679), 2025-02-04)
+%     https://github.com/latex3/latex3/commit/0fdf1714c0820fe3016d53f4b3932585dbea75ff
+
+\documentclass{article}
+%\usepackage{zutil}
+
+  \usepackage{unravel}
+  \unravelsetup{max-action=1000, max-input=1000, max-output=1000}
+  \long\def\beginunravel#1\endunravel{\unravel{#1}}
+  \def\endunravel{}
+
+\begin{document}
+
+\ttfamily\frenchspacing\leavevmode
+\ExplSyntaxOn
+
+\beginunravel
+\tl_trim_spaces:n {~a~}
+
+\endunravel
+\ExplSyntaxOff
+\end{document}
+
+\ExplSyntaxOn
+%% implementation v3
+\tl_trim_spces:n { ␣{a}␣ }
+
+% expand \tl_trim_spces:n
+\__tl_trim_spaces:nn { \__kernel_exp_not:w \exp_after:wN } { ␣{a}␣ }
+
+\cs_new:Npn \__tl_trim_spaces:nn #1#2
+  {
+    \__tl_trim_spaces_auxi:w
+      \__tl_trim_mark: #2 \s__tl_nil
+      \__tl_trim_mark: \__tl_trim_spaces_auxi:w
+      \__tl_trim_mark: ␣
+      \__tl_trim_mark: \__tl_trim_spaces_auxii:w
+    {#1}
+  }
+
+% expand \__tl_trim_spaces:nn
+\__tl_trim_spaces_auxi:w
+  \__tl_trim_mark: ␣{a}␣ \s__tl_nil
+  \__tl_trim_mark: \__tl_trim_spaces_auxi:w
+  \__tl_trim_mark: ␣
+  \__tl_trim_mark: \__tl_trim_spaces_auxii:w
+{ \__kernel_exp_not:w \exp_after:w }
+
+\cs_new:Npn \__tl_trim_spaces_auxi:w
+    #1 \__tl_trim_mark: ␣ #2 \__tl_trim_mark: #3
+  { #3 #1 \__tl_trim_mark: #2 \__tl_trim_mark: \__tl_trim_spaces_auxi:w }
+
+% expand \__tl_trim_spaces_auxi:w, #1 = "", #2 = "a␣ \s__tl_nil", #3 = "\__tl_trim_spaces_auxi:w"
+\__tl_trim_spaces_auxi:w
+  \__tl_trim_mark: {a}␣ \s__tl_nil \__tl_trim_mark: \__tl_trim_spaces_auxi:w
+  \__tl_trim_mark: ␣
+  \__tl_trim_mark: \__tl_trim_spaces_auxii:w
+{ \__kernel_exp_not:w \exp_after:w }
+
+
+% expand auxi, #1 = "\__tl_trim_mark: a␣ \s__tl_nil \__tl_trim_mark: \__tl_trim_spaces_auxi:w", #2 = "", #3 = "\__tl_trim_spaces_auxii:w"
+\__tl_trim_spaces_auxii:w
+  \__tl_trim_mark: {a}␣ \s__tl_nil \__tl_trim_mark: \__tl_trim_spaces_auxi:w
+  \__tl_trim_mark: \__tl_trim_mark: \__tl_trim_spaces_auxi:w
+{ \__kernel_exp_not:w \exp_after:w }
+
+\cs_new:Npn \__tl_trim_spaces_auxii:w
+    \__tl_trim_mark: #1 \__tl_trim_mark: #2 \__tl_trim_spaces_auxi:w
+    \__tl_trim_mark: \__tl_trim_mark: \__tl_trim_spaces_auxi:w
+  {
+    \__tl_trim_spaces_auxiii:w
+      \__tl_trim_mark: #1 \__tl_trim_spaces_auxiii:w
+      ␣ \s__tl_nil \__tl_trim_spaces_auxiv:w
+  }
+
+% expand auxii, #1 = "a␣ \s__tl_nil", #2 = ""
+\__tl_trim_spaces_auxiii:w
+  \__tl_trim_mark: {a}␣ \s__tl_nil \__tl_trim_spaces_auxiii:w
+  ␣ \s__tl_nil \__tl_trim_spaces_auxiv:w
+{ \__kernel_exp_not:w \exp_after:w }
+
+\cs_new:Npn \__tl_trim_spaces_auxiii:w #1 ␣ \s__tl_nil #2
+  { #2 #1 \s__tl_nil \__tl_trim_spaces_auxiii:w }
+
+% expand auxiii, #1 = "\__tl_trim_mark: a", #2 = "\__tl_trim_spaces_auxiii:w"
+\__tl_trim_spaces_auxiii:w
+  \__tl_trim_mark: {a} \s__tl_nil \__tl_trim_spaces_auxiii:w
+  ␣ \s__tl_nil \__tl_trim_spaces_auxiv:w
+{ \__kernel_exp_not:w \exp_after:w }
+
+% expand auxiii, #1 = "\__tl_trim_mark: {a} \s__tl_nil \__tl_trim_spaces_auxiii:w", #2 = "\__tl_trim_spaces_auxiv:w"
+\__tl_trim_spaces_auxiv:w
+  \__tl_trim_mark: {a} \s__tl_nil \__tl_trim_spaces_auxiii:w
+  \s__tl_nil \__tl_trim_spaces_auxiii:w
+{ \__kernel_exp_not:w \exp_after:w }
+
+\cs_new:Npn \__tl_trim_spaces_auxiv:w
+    #1 \s__tl_nil
+    \__tl_trim_spaces_auxiii:w \s__tl_nil \__tl_trim_spaces_auxiii:w
+    #2
+  { #2 {#1} }
+
+% expand auxvi, #1 = "\__tl_trim_mark: a", #2 = "\__kernel_exp_not:w \exp_after:w"
+\__kernel_exp_not:w \exp_after:w { \__tl_trim_mark: {a} }
+
+\cs_new:Npn \__tl_trim_mark: {}
+
+% expand \__tl_trim_mark:
+\__kernel_exp_not:w { {a} }
+
+
+%% implementation v2
+\tl_trim_spces:n { ␣{a}␣ }
+
+\cs_new:Npn \tl_trim_spaces:n #1
+  {
+    \__tl_trim_spaces:nn
+      { \__tl_trim_mark: #1 }
+      { \__kelnel_exp_not:w \exp_after:wN }
+  }
+% expand \tr_trim_spaces:n, #1 = "␣a␣"
+\__tl_trim_spaces:nn {\__tl_trim_mark: ␣{a}␣}{\__kernel_exp_not:w \exp_after:wN }
+
+\cs_new:Npn \__tl_trim_spaces:nn #1
+  {
+    \__tl_trim_spaces_auxi:w
+      #1
+      \s__tl_nil
+      \__tl_trim_mark: ~ { }
+      \__tl_trim_mark: \__tl_trim_spaces_auxii:w
+      % << end of possible parameter text used by auxi:w, which is
+      %    "#1 \__tl_trim_mark: ~ #2 \__tl_trim_mark: #3"
+      \__tl_trim_spaces_auxiii:w
+      ~ \s__tl_nil
+      \__tl_trim_spaces_auxiv:w
+      % << end of possible parameter text used by auxiii:w, which is
+      %    "#1 ~ \s__tl_nil #2"
+    \s__tl_stop
+  }
+% expand \__tl_trim_spaces:nn
+\__tl_trim_spaces_auxi:w
+  \__tl_trim_mark: ␣{a}␣
+  \s__tl_nil
+  \__tl_trim_mark: ~ { }
+  \__tl_trim_mark: \__tl_trim_spaces_auxii:w
+  \__tl_trim_spaces_auxiii:w
+  ~ \s__tl_nil
+  \__tl_trim_spaces_auxiv:w
+\s__tl_stop
+{\__kernel_exp_not:w \exp_after:wN }
+
+\cs_new:Npn
+    \__tl_trim_spaces_auxi:w #1 \__tl_trim_mark: ~ #2 \__tl_trim_mark: #3
+  {
+    #3
+    \__tl_trim_spaces_auxi:w
+    \__tl_trim_mark:
+    #2
+    \__tl_trim_mark: ~ {#1}
+  }
+% expand \__tl_trim_spaces_auxi:w, #1 = "", #2 = "a␣\s__tl_nil", #3 = ""
+% note that #3 of \__tl_trim_spaces_auxi:w is undelimited, thus the space before #1 is skipped
+%
+% This expansion trims one space from left side of "␣a␣"
+\__tl_trim_spaces_auxi:w
+  \__tl_trim_mark: {a}␣
+  \s__tl_nil
+  \__tl_trim_mark: ~ { }
+  \__tl_trim_mark: \__tl_trim_spaces_auxii:w
+  \__tl_trim_spaces_auxiii:w
+  ~ \s__tl_nil
+  \__tl_trim_spaces_auxiv:w
+\s__tl_stop
+{\__kernel_exp_not:w \exp_after:wN }
+
+% expand auxi:w, #1 = "\__tl_trim_mark: a␣\s__tl_nil", #2 = "", #3 = "\__tl_trim_spaces_auxii:w"
+\__tl_trim_spaces_auxii:w
+  \__tl_trim_spaces_auxi:w
+  \__tl_trim_mark:
+  \__tl_trim_mark: ~ { \__tl_trim_mark: {a}␣\s__tl_nil }
+  \__tl_trim_spaces_auxiii:w
+  ~ \s__tl_nil
+  \__tl_trim_spaces_auxiv:w
+\s__tl_stop
+{\__kernel_exp_not:w \exp_after:wN }
+
+\cs_new:Npn \__tl_trim_spaces_auxii:w
+    \__tl_trim_spaces_auxi:w \__tl_trim_mark: \__tl_trim_mark: #1
+  {
+    \__tl_trim_spaces_auxiii:w
+    #1
+  }
+% expand auxii:w, #1 = "\__tl_trim_mark: a␣\s__tl_nil"
+\__tl_trim_spaces_auxiii:w
+  \__tl_trim_mark: {a}␣\s__tl_nil
+  \__tl_trim_spaces_auxiii:w
+  ~ \s__tl_nil
+  \__tl_trim_spaces_auxiv:w
+\s__tl_stop
+{\__kernel_exp_not:w \exp_after:wN }
+
+\cs_new:Npn \__tl_trim_spaces_auxiii:w #1 ~ \s__tl_nil #2
+  {
+    #2
+    #1 \s__tl_nil
+    \__tl_trim_spaces_auxiii:w
+  }
+% expand auxiii:w, #1 = "\__tl_trim_mark: a", #2 = "\__tl_trim_spaces_auxiii:w"
+%
+% This expansion trims one space from right side of "a␣"
+\__tl_trim_spaces_auxiii:w
+  \__tl_trim_mark: {a} \s__tl_nil
+  \__tl_trim_spaces_auxiii:w
+  ~ \s__tl_nil
+  \__tl_trim_spaces_auxiv:w
+\s__tl_stop
+{\__kernel_exp_not:w \exp_after:wN }
+
+% expand auxiii:w, #1 = "\__tl_trim_mark: {a} \s__tl_nil \__tl_trim_spaces_auxiii:w", #2 = "\__tl_trim_spaces_auxiv:w"
+\__tl_trim_spaces_auxiv:w
+  \__tl_trim_mark: {a} \s__tl_nil \__tl_trim_spaces_auxiii:w \s__tl_nil
+  \__tl_trim_spaces_auxiii:w
+\s__tl_stop
+{\__kernel_exp_not:w \exp_after:wN }
+
+\cs_new:Npn \__tl_trim_spaces_auxiv:w #1 \s__tl_nil #2 \s__tl_stop #3
+  { #3 { #1 } }
+% expand auxiv:w, #1 = "\__tl_trim_mark: a", #2 = "\__tl_trim_spaces_auxiii:w \s__tl_nil \__tl_trim_spaces_auxiii:w", #3 = "\__kernel_exp_not:w \exp_after:wN"
+\__kernel_exp_not:w \exp_after:wN { \__tl_trim_mark: {a} }
+
+% expand \__kernel_exp_not:w, expand \exp_after:wN
+% \__tl_trim_mark: expands to nothing
+\__kernel_exp_not:w { {a} }
+
+%% done
+\ExplSyntaxOff
